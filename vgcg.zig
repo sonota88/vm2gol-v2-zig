@@ -54,7 +54,7 @@ fn rest(list: *NodeList) *NodeList {
 fn toFnArgRef(dest: []u8, names: *Names, name: []const u8) void {
     const i = names.indexOf(name);
     if (i == -1) {
-        panic("lvar not found", .{});
+        panic("fn arg not found", .{});
     }
 
     const ret: []u8 = std.fmt.bufPrint(dest, "[bp+{}]", .{i + 2}) catch |err| {
