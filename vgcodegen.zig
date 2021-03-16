@@ -241,7 +241,7 @@ fn _codegenExprBinary(
     lvar_names: *Names,
     expr: *NodeList,
 ) void {
-    puts_fn("codegenExpr");
+    // puts_fn("_codegenExprBinary");
 
     const op = head(expr).getStr();
     const args = rest(expr);
