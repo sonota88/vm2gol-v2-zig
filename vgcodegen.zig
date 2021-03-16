@@ -164,11 +164,13 @@ fn codegenExprPush(fn_arg_names: *Names, lvar_names: *Names, val: *Node) void {
     // puts_fn("codegenExprPush");
     var buf: [8]u8 = undefined;
     var push_arg: []const u8 = toAsmArg(&buf, fn_arg_names, lvar_names, val);
-    if (push_arg.len == 0) {
+
+    if (0 < push_arg.len) {
+        puts_fmt("  cp {} reg_a", .{push_arg});
+    } else {
         switch (val.kind) {
             .LIST => {
                 _codegenExprBinary(fn_arg_names, lvar_names, val.getList());
-                push_arg = "reg_a";
             },
             else => {
                 putskv_e("val", val);
@@ -176,8 +178,6 @@ fn codegenExprPush(fn_arg_names: *Names, lvar_names: *Names, val: *Node) void {
             },
         }
     }
-
-    puts_fmt("  push {}", .{push_arg});
 }
 
 fn codegenExprAdd() void {
@@ -250,7 +250,9 @@ fn _codegenExprBinary(
     const term_r = args.get(1);
 
     codegenExprPush(fn_arg_names, lvar_names, term_l);
+    puts("  push reg_a");
     codegenExprPush(fn_arg_names, lvar_names, term_r);
+    puts("  push reg_a");
 
     if (strEq(op, "+")) {
         codegenExprAdd();
