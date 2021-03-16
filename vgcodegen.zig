@@ -261,6 +261,25 @@ fn codegenExpr(
         puts_fmt("  cp {} reg_a", .{push_arg});
     } else {
         switch (expr.kind) {
+            .STR => {
+                if (vramMatch(expr.getStr())) {
+                    const vram_arg = getVramParam(expr.getStr());
+
+                    if (matchNumber(vram_arg)) {
+                        puts_fmt("  get_vram {} reg_a", .{vram_arg});
+                    } else {
+                        var buf2: [8]u8 = undefined;
+                        const vram_ref: []const u8 = toAsmArg(&buf2, fn_arg_names, lvar_names, Node.initStr(vram_arg));
+                        if (0 < vram_ref.len) {
+                            puts_fmt("  get_vram {} reg_a", .{vram_ref});
+                        } else {
+                            panic("not_yet_impl", .{});
+                        }
+                    }
+                } else {
+                    panic("not_yet_impl", .{});
+                }
+            },
             .LIST => {
                 _codegenExprBinary(fn_arg_names, lvar_names, expr.getList());
             },
