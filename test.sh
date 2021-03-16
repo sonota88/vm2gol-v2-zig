@@ -204,6 +204,7 @@ test_compile_nn() {
   local temp_vga_file="${TEMP_DIR}/test.vga.txt"
   local local_errs=""
   local exp_vga_file="${TEST_DIR}/compile/exp_${nn}.vga.txt"
+  local diff_file="${TEMP_DIR}/test_${nn}.diff"
 
   echo "  tokenize" >&2
   run_lex ${TEST_DIR}/compile/${nn}.vg.txt \
@@ -233,11 +234,21 @@ test_compile_nn() {
   fi
 
   if [ "$local_errs" = "" ]; then
-    ruby test/diff.rb asm $exp_vga_file $temp_vga_file
-    if [ $? -ne 0 ]; then
-      # meld $exp_vga_file $temp_vga_file &
+    ruby test/diff.rb asm $exp_vga_file $temp_vga_file > $diff_file
+    local num_lines=$(wc -l $diff_file | cut -d " " -f 1)
 
+    if [ $num_lines -gt 20 ]; then
+      echo "test_compile ${nn} failed. For detail, run" >&2
+      echo "  cat ${diff_file}" >&2
+      echo "" >&2
+    elif [ $num_lines -gt 0 ]; then
+      cat $diff_file
+    fi
+
+    if [ $num_lines -gt 0 ]; then
+      # meld $exp_vga_file $temp_vga_file &
       ERRS="${ERRS},compile_${nn}_diff"
+
       return
     fi
   fi
