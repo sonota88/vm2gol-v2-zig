@@ -42,7 +42,7 @@ run_parse() {
 run_cg() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run vgcg.zig
+  cat $infile | $ZIG run vgcodegen.zig
 }
 
 # --------------------------------
