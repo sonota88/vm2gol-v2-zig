@@ -281,11 +281,11 @@ fn codegenCallPushFnArg(
 
     var buf: [8]u8 = undefined;
     const push_arg: []const u8 = toAsmArg(&buf, fn_arg_names, lvar_names, fn_arg);
-    if (push_arg.len == 0) {
+    if (0 < push_arg.len) {
+        puts_fmt("  cp {} reg_a", .{push_arg});
+    } else {
         panic("not yet impl", .{});
     }
-
-    puts_fmt("  push {}", .{push_arg});
 }
 
 fn codegenCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) void {
@@ -299,6 +299,7 @@ fn codegenCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) v
         while (true) {
             const fn_arg = fn_args.get(i);
             codegenCallPushFnArg(fn_arg_names, lvar_names, fn_arg);
+            puts("  push reg_a");
             if (i == 0) {
                 break;
             } else {
@@ -333,6 +334,7 @@ fn codegenCallSet(
         while (true) : (i -= 1) {
             const fn_arg = fn_args.get(i);
             codegenCallPushFnArg(fn_arg_names, lvar_names, fn_arg);
+            puts("  push reg_a");
 
             if (i == 0) {
                 break;
