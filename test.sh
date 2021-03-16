@@ -15,7 +15,7 @@ ZIG=zig-0.6.0
 EXE_FILE=${PROJECT_DIR}/bin/app
 
 MAX_ID_JSON=6
-MAX_ID_TOKENIZE=2
+MAX_ID_LEX=2
 MAX_ID_PARSE=2
 MAX_ID_STEP=29
 
@@ -27,10 +27,10 @@ run_test_json() {
   cat $infile | $ZIG run test_json.zig
 }
 
-run_tokenize() {
+run_lex() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run vgtokenizer.zig
+  cat $infile | $ZIG run vglexer.zig
 }
 
 run_parse() {
@@ -114,7 +114,7 @@ test_json() {
 
 # --------------------------------
 
-test_tokenize_nn() {
+test_lex_nn() {
   local nn="$1"; shift
 
   echo "case ${nn}"
@@ -123,7 +123,7 @@ test_tokenize_nn() {
   local temp_tokens_file="${TEMP_DIR}/test.tokens.txt"
   local exp_tokens_file="${TEST_DIR}/tokenize/exp_${nn}.txt"
 
-  run_tokenize $input_file > $temp_tokens_file
+  run_lex $input_file > $temp_tokens_file
   if [ $? -ne 0 ]; then
     ERRS="${ERRS},${nn}_tokenize"
     return
@@ -139,10 +139,10 @@ test_tokenize_nn() {
 }
 
 test_tokenize() {
-  local ids="$(get_ids $MAX_ID_TOKENIZE "$@")"
+  local ids="$(get_ids $MAX_ID_LEX "$@")"
 
   for id in $ids; do
-    test_tokenize_nn $(printf "%02d" $id)
+    test_lex_nn $(printf "%02d" $id)
   done
 }
 
@@ -159,7 +159,7 @@ test_parse_nn() {
   local exp_vgt_file="${TEST_DIR}/parse/exp_${nn}.vgt.json"
 
   echo "  tokenize" >&2
-  run_tokenize $input_file > $temp_tokens_file
+  run_lex $input_file > $temp_tokens_file
   if [ $? -ne 0 ]; then
     ERRS="${ERRS},${nn}_tokenize"
     return
@@ -206,7 +206,7 @@ test_compile_nn() {
   local exp_vga_file="${TEST_DIR}/compile/exp_${nn}.vga.txt"
 
   echo "  tokenize" >&2
-  run_tokenize ${TEST_DIR}/compile/${nn}.vg.txt \
+  run_lex ${TEST_DIR}/compile/${nn}.vg.txt \
     > $temp_tokens_file
   if [ $? -ne 0 ]; then
     ERRS="${ERRS},${nn}_tokenize"
