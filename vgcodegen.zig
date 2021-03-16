@@ -267,6 +267,31 @@ fn _codegenExprBinary(
     }
 }
 
+fn codegenExpr(
+    fn_arg_names: *Names,
+    lvar_names: *Names,
+    expr: *Node,
+) void {
+    puts_fn("codegenExpr");
+
+    var buf: [8]u8 = undefined;
+    var push_arg: []const u8 = toAsmArg(&buf, fn_arg_names, lvar_names, expr);
+
+    if (0 < push_arg.len) {
+        puts_fmt("  cp {} reg_a", .{push_arg});
+    } else {
+        switch (expr.kind) {
+            .LIST => {
+                _codegenExprBinary(fn_arg_names, lvar_names, expr.getList());
+            },
+            else => {
+                putskv_e("expr", expr);
+                panic("not_yet_impl", .{});
+            },
+        }
+    }
+}
+
 fn codegenCallPushFnArg(
     fn_arg_names: *Names,
     lvar_names: *Names,
