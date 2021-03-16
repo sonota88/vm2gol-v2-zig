@@ -167,7 +167,7 @@ fn codegenExprPush(fn_arg_names: *Names, lvar_names: *Names, val: *Node) void {
     if (push_arg.len == 0) {
         switch (val.kind) {
             .LIST => {
-                codegenExpr(fn_arg_names, lvar_names, val.getList());
+                _codegenExprBinary(fn_arg_names, lvar_names, val.getList());
                 push_arg = "reg_a";
             },
             else => {
@@ -236,7 +236,7 @@ fn codegenExprNeq() void {
     puts_fmt("label {}", .{end_label});
 }
 
-fn codegenExpr(
+fn _codegenExprBinary(
     fn_arg_names: *Names,
     lvar_names: *Names,
     expr: *NodeList,
@@ -362,7 +362,7 @@ fn codegenSet(
         switch (expr.kind) {
             .LIST => {
                 if (expr.list) |_list| {
-                    codegenExpr(fn_arg_names, lvar_names, _list);
+                    _codegenExprBinary(fn_arg_names, lvar_names, _list);
                 }
                 arg_src = "reg_a";
             },
@@ -506,7 +506,7 @@ fn codegenWhile(
 
     puts_fmt("label {}", .{label_begin});
 
-    codegenExpr(fn_arg_names, lvar_names, cond_expr);
+    _codegenExprBinary(fn_arg_names, lvar_names, cond_expr);
 
     puts("  set_reg_b 1");
     puts("  compare");
@@ -560,7 +560,7 @@ fn codegenCase(
 
         if (strEq(cond_head, "eq")) {
             puts("  # -->> expr");
-            codegenExpr(fn_arg_names, lvar_names, cond);
+            _codegenExprBinary(fn_arg_names, lvar_names, cond);
             puts("  # <<-- expr");
 
             puts("  set_reg_b 1");
