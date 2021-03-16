@@ -57,7 +57,7 @@ fn toFnArgRef(dest: []u8, names: *Names, name: []const u8) void {
         panic("fn arg not found", .{});
     }
 
-    const ret: []u8 = std.fmt.bufPrint(dest, "[bp+{}]", .{i + 2}) catch |err| {
+    const ret: []u8 = std.fmt.bufPrint(dest, "[bp:{}]", .{i + 2}) catch |err| {
         panic("err ({})", .{err});
     };
 
@@ -70,7 +70,7 @@ fn toLvarRef(dest: []u8, names: *Names, name: []const u8) void {
         panic("lvar not found", .{});
     }
 
-    const ret: []u8 = std.fmt.bufPrint(dest, "[bp-{}]", .{i + 1}) catch |err| {
+    const ret: []u8 = std.fmt.bufPrint(dest, "[bp:-{}]", .{i + 1}) catch |err| {
         panic("err ({})", .{err});
     };
 
