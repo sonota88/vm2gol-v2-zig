@@ -591,6 +591,19 @@ fn genTopStmts(top_stmts: *NodeList) void {
     }
 }
 
+fn genBuiltinSetVram() void {
+    puts("");
+    puts("label set_vram");
+    puts("  push bp");
+    puts("  cp sp bp");
+
+    puts("  set_vram [bp:2] [bp:3]"); // vram_addr value
+
+    puts("  cp bp sp");
+    puts("  pop bp");
+    puts("  ret");
+}
+
 pub fn main() !void {
     var buf: [20000]u8 = undefined;
     const src = utils.readStdinAll(&buf);
@@ -601,4 +614,9 @@ pub fn main() !void {
     puts("  exit");
 
     genTopStmts(top_stmts);
+
+    puts("");
+    puts("#>builtins");
+    genBuiltinSetVram();
+    puts("#<builtins");
 }
