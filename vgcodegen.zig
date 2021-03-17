@@ -494,15 +494,10 @@ fn codegenCase(
         when_idx += 1;
 
         const cond = head(when_block);
-        const cond_list = cond.getList();
         const _rest = rest(when_block);
-
-        const cond_head = head(cond_list).getStr();
-        // const cond_rest = rest(cond_list);
 
         puts_fmt("  # when_{}_{}", .{ label_id, when_idx });
 
-        if (strEq(cond_head, "eq")) {
             puts("  # -->> expr");
             codegenExpr(fn_arg_names, lvar_names, cond);
             puts("  # <<-- expr");
@@ -519,9 +514,6 @@ fn codegenCase(
 
             puts_fmt("  jump {}", .{label_end});
             puts_fmt("label {}_{}", .{ label_end_when_head, when_idx });
-        } else {
-            panic("not_yet_impl", .{});
-        }
     }
 
     puts_fmt("label end_case_{}", .{label_id});
