@@ -191,38 +191,38 @@ fn genExpr(
 ) void {
     puts_fn("genExpr");
 
-        switch (expr.kind) {
-            .INT => {
-                if (expr.int) |intval| {
-                    var buf1: [16]u8 = undefined;
-                    puts_fmt("  cp {} reg_a", .{ intval });
-                } else {
-                    panic("must not happen", .{});
-                }
-            },
-            .STR => {
-                var buf2: [16]u8 = undefined;
-                const str = expr.getStr();
-                if (0 <= lvar_names.indexOf(str)) {
-                    const disp = lvarDisp(buf2[0..], lvar_names, str);
-                    const cp_src = formatIndirection(buf2[0..], "bp", disp);
-                    puts_fmt("  cp {} reg_a", .{ cp_src });
-                } else if (0 <= fn_arg_names.indexOf(str)) {
-                    const disp = fnArgDisp(fn_arg_names, str);
-                    const cp_src = formatIndirection(buf2[0..], "bp", disp);
-                    puts_fmt("  cp {} reg_a", .{ cp_src });
-                } else {
-                    panic("must not happen", .{});
-                }
-            },
-            .LIST => {
-                _genExprBinary(fn_arg_names, lvar_names, expr.getList());
-            },
-            else => {
-                putskv_e("expr", expr);
-                panic("not_yet_impl", .{});
-            },
-        }
+    switch (expr.kind) {
+        .INT => {
+            if (expr.int) |intval| {
+                var buf1: [16]u8 = undefined;
+                puts_fmt("  cp {} reg_a", .{ intval });
+            } else {
+                panic("must not happen", .{});
+            }
+        },
+        .STR => {
+            var buf2: [16]u8 = undefined;
+            const str = expr.getStr();
+            if (0 <= lvar_names.indexOf(str)) {
+                const disp = lvarDisp(buf2[0..], lvar_names, str);
+                const cp_src = formatIndirection(buf2[0..], "bp", disp);
+                puts_fmt("  cp {} reg_a", .{ cp_src });
+            } else if (0 <= fn_arg_names.indexOf(str)) {
+                const disp = fnArgDisp(fn_arg_names, str);
+                const cp_src = formatIndirection(buf2[0..], "bp", disp);
+                puts_fmt("  cp {} reg_a", .{ cp_src });
+            } else {
+                panic("must not happen", .{});
+            }
+        },
+        .LIST => {
+            _genExprBinary(fn_arg_names, lvar_names, expr.getList());
+        },
+        else => {
+            putskv_e("expr", expr);
+            panic("not_yet_impl", .{});
+        },
+    }
 }
 
 fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *List) void {
