@@ -186,11 +186,11 @@ fn genExprEq() void {
     puts("  compare");
     puts_fmt("  jump_eq {}", .{then_label});
 
-    puts("  set_reg_a 0");
+    puts("  cp 0 reg_a");
     puts_fmt("  jump {}", .{end_label});
 
     puts_fmt("label {}", .{then_label});
-    puts("  set_reg_a 1");
+    puts("  cp 1 reg_a");
     puts_fmt("label {}", .{end_label});
 }
 
@@ -208,11 +208,11 @@ fn genExprNeq() void {
     puts("  compare");
     puts_fmt("  jump_eq {}", .{then_label});
 
-    puts("  set_reg_a 1");
+    puts("  cp 1 reg_a");
     puts_fmt("  jump {}", .{end_label});
 
     puts_fmt("label {}", .{then_label});
-    puts("  set_reg_a 0");
+    puts("  cp 0 reg_a");
     puts_fmt("label {}", .{end_label});
 }
 
@@ -451,7 +451,7 @@ fn genWhile(
 
     genExpr(fn_arg_names, lvar_names, cond_expr);
 
-    puts("  set_reg_b 1");
+    puts("  cp 1 reg_b");
     puts("  compare");
 
     puts_fmt("  jump_eq {}\n", .{label_true});
@@ -502,7 +502,7 @@ fn genCase(
         genExpr(fn_arg_names, lvar_names, cond);
         puts("  # <<-- expr");
 
-        puts("  set_reg_b 1");
+        puts("  cp 1 reg_b");
 
         puts("  compare");
         puts_fmt("  jump_eq {}_{}", .{ label_when_head, when_idx });
