@@ -148,7 +148,7 @@ fn matchNumber(str: []const u8) bool {
 
 // --------------------------------
 
-fn codegenVar(
+fn genVar(
     fn_arg_names: *Names,
     lvar_names: *Names,
     stmt_rest: *NodeList,
@@ -156,23 +156,23 @@ fn codegenVar(
     puts("  sub_sp 1");
 
     if (stmt_rest.len == 2) {
-        codegenSet(fn_arg_names, lvar_names, stmt_rest);
+        genSet(fn_arg_names, lvar_names, stmt_rest);
     }
 }
 
-fn codegenExprAdd() void {
+fn genExprAdd() void {
     puts("  pop reg_b");
     puts("  pop reg_a");
     puts("  add_ab");
 }
 
-fn codegenExprMult() void {
+fn genExprMult() void {
     puts("  pop reg_b");
     puts("  pop reg_a");
     puts("  mult_ab");
 }
 
-fn codegenExprEq() void {
+fn genExprEq() void {
     const label_id = getLabelId();
 
     var buf1: [32]u8 = undefined;
@@ -194,7 +194,7 @@ fn codegenExprEq() void {
     puts_fmt("label {}", .{end_label});
 }
 
-fn codegenExprNeq() void {
+fn genExprNeq() void {
     const label_id = getLabelId();
 
     var buf1: [32]u8 = undefined;
@@ -216,12 +216,12 @@ fn codegenExprNeq() void {
     puts_fmt("label {}", .{end_label});
 }
 
-fn _codegenExprBinary(
+fn _genExprBinary(
     fn_arg_names: *Names,
     lvar_names: *Names,
     expr: *NodeList,
 ) void {
-    // puts_fn("_codegenExprBinary");
+    // puts_fn("_genExprBinary");
 
     const op = head(expr).getStr();
     const args = rest(expr);
@@ -229,30 +229,30 @@ fn _codegenExprBinary(
     const term_l = args.get(0);
     const term_r = args.get(1);
 
-    codegenExpr(fn_arg_names, lvar_names, term_l);
+    genExpr(fn_arg_names, lvar_names, term_l);
     puts("  push reg_a");
-    codegenExpr(fn_arg_names, lvar_names, term_r);
+    genExpr(fn_arg_names, lvar_names, term_r);
     puts("  push reg_a");
 
     if (strEq(op, "+")) {
-        codegenExprAdd();
+        genExprAdd();
     } else if (strEq(op, "*")) {
-        codegenExprMult();
+        genExprMult();
     } else if (strEq(op, "eq")) {
-        codegenExprEq();
+        genExprEq();
     } else if (strEq(op, "neq")) {
-        codegenExprNeq();
+        genExprNeq();
     } else {
         panic("not_yet_impl ({})", .{op});
     }
 }
 
-fn codegenExpr(
+fn genExpr(
     fn_arg_names: *Names,
     lvar_names: *Names,
     expr: *Node,
 ) void {
-    puts_fn("codegenExpr");
+    puts_fn("genExpr");
 
     var buf: [8]u8 = undefined;
     var push_arg: []const u8 = toAsmArg(&buf, fn_arg_names, lvar_names, expr);
@@ -281,7 +281,7 @@ fn codegenExpr(
                 }
             },
             .LIST => {
-                _codegenExprBinary(fn_arg_names, lvar_names, expr.getList());
+                _genExprBinary(fn_arg_names, lvar_names, expr.getList());
             },
             else => {
                 putskv_e("expr", expr);
@@ -291,8 +291,8 @@ fn codegenExpr(
     }
 }
 
-fn codegenCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) void {
-    puts_fn("codegenCall");
+fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) void {
+    puts_fn("genCall");
 
     const fn_name = head(stmt_rest).getStr();
     const fn_args = rest(stmt_rest);
@@ -301,7 +301,7 @@ fn codegenCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) v
         var i: usize = fn_args.len - 1;
         while (true) {
             const fn_arg = fn_args.get(i);
-            codegenExpr(fn_arg_names, lvar_names, fn_arg);
+            genExpr(fn_arg_names, lvar_names, fn_arg);
             puts("  push reg_a");
             if (i == 0) {
                 break;
@@ -313,18 +313,18 @@ fn codegenCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) v
 
     var buf1: [256]u8 = undefined;
     const vm_cmt = bufPrint(&buf1, "call  {}", .{fn_name});
-    codegenVmComment(vm_cmt);
+    genVmComment(vm_cmt);
 
     puts_fmt("  call {}", .{fn_name});
     puts_fmt("  add_sp {}", .{fn_args.len});
 }
 
-fn codegenCallSet(
+fn genCallSet(
     fn_arg_names: *Names,
     lvar_names: *Names,
     stmt_rest: *NodeList,
 ) void {
-    puts_fn("codegenCallSet");
+    puts_fn("genCallSet");
 
     const lvar_name = stmt_rest.get(0).getStr();
     const fn_temp = stmt_rest.get(1).getList();
@@ -336,7 +336,7 @@ fn codegenCallSet(
         var i: usize = fn_args.size() - 1;
         while (true) : (i -= 1) {
             const fn_arg = fn_args.get(i);
-            codegenExpr(fn_arg_names, lvar_names, fn_arg);
+            genExpr(fn_arg_names, lvar_names, fn_arg);
             puts("  push reg_a");
 
             if (i == 0) {
@@ -356,16 +356,16 @@ fn codegenCallSet(
     });
 }
 
-fn codegenSet(
+fn genSet(
     fn_arg_names: *Names,
     lvar_names: *Names,
     stmt_rest: *NodeList,
 ) void {
-    puts_fn("codegenSet");
+    puts_fn("genSet");
     const dest = stmt_rest.get(0);
     const expr = stmt_rest.get(1);
 
-    codegenExpr(fn_arg_names, lvar_names, expr);
+    genExpr(fn_arg_names, lvar_names, expr);
 
     var buf2: [8]u8 = undefined;
     const arg_dest = toAsmArg(&buf2, fn_arg_names, lvar_names, dest);
@@ -399,16 +399,16 @@ fn codegenSet(
     }
 }
 
-fn codegenReturn(
+fn genReturn(
     lvar_names: *Names,
     stmt_rest: *NodeList,
 ) void {
     const retval = head(stmt_rest);
-    codegenExpr(Names.empty(), lvar_names, retval);
+    genExpr(Names.empty(), lvar_names, retval);
 }
 
-fn codegenVmComment(cmt: []const u8) void {
-    puts_fn("codegenVmComment");
+fn genVmComment(cmt: []const u8) void {
+    puts_fn("genVmComment");
 
     var temp: [256]u8 = undefined;
 
@@ -424,12 +424,12 @@ fn codegenVmComment(cmt: []const u8) void {
     puts_fmt("  _cmt {}", .{temp[0..i]});
 }
 
-fn codegenWhile(
+fn genWhile(
     fn_arg_names: *Names,
     lvar_names: *Names,
     stmt_rest: *NodeList,
 ) void {
-    puts_fn("codegenWhile");
+    puts_fn("genWhile");
 
     const cond_expr = stmt_rest.get(0);
     const body = stmt_rest.get(1).getList();
@@ -449,7 +449,7 @@ fn codegenWhile(
 
     puts_fmt("label {}", .{label_begin});
 
-    codegenExpr(fn_arg_names, lvar_names, cond_expr);
+    genExpr(fn_arg_names, lvar_names, cond_expr);
 
     puts("  set_reg_b 1");
     puts("  compare");
@@ -458,7 +458,7 @@ fn codegenWhile(
     puts_fmt("  jump {}\n", .{label_end});
     puts_fmt("label {}\n", .{label_true});
 
-    codegenStmts(fn_arg_names, lvar_names, body);
+    genStmts(fn_arg_names, lvar_names, body);
 
     puts_fmt("  jump {}", .{label_begin});
 
@@ -466,12 +466,12 @@ fn codegenWhile(
     print("\n");
 }
 
-fn codegenCase(
+fn genCase(
     fn_arg_names: *Names,
     lvar_names: *Names,
     when_blocks: *NodeList,
 ) void {
-    puts_fn("codegenCase");
+    puts_fn("genCase");
 
     const label_id = getLabelId();
     var when_idx: i32 = -1;
@@ -499,7 +499,7 @@ fn codegenCase(
         puts_fmt("  # when_{}_{}", .{ label_id, when_idx });
 
         puts("  # -->> expr");
-        codegenExpr(fn_arg_names, lvar_names, cond);
+        genExpr(fn_arg_names, lvar_names, cond);
         puts("  # <<-- expr");
 
         puts("  set_reg_b 1");
@@ -510,7 +510,7 @@ fn codegenCase(
 
         puts_fmt("label {}_{}", .{ label_when_head, when_idx });
 
-        codegenStmts(fn_arg_names, lvar_names, _rest);
+        genStmts(fn_arg_names, lvar_names, _rest);
 
         puts_fmt("  jump {}", .{label_end});
         puts_fmt("label {}_{}", .{ label_end_when_head, when_idx });
@@ -521,36 +521,36 @@ fn codegenCase(
     print("\n");
 }
 
-fn codegenStmt(
+fn genStmt(
     fn_arg_names: *Names,
     lvar_names: *Names,
     stmt: *NodeList,
 ) void {
-    puts_fn("codegenStmt");
+    puts_fn("genStmt");
 
     const stmt_head = head(stmt).getStr();
     const stmt_rest = rest(stmt);
 
     if (strEq(stmt_head, "set")) {
-        codegenSet(fn_arg_names, lvar_names, stmt_rest);
+        genSet(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "call")) {
-        codegenCall(fn_arg_names, lvar_names, stmt_rest);
+        genCall(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "call_set")) {
-        codegenCallSet(fn_arg_names, lvar_names, stmt_rest);
+        genCallSet(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "return")) {
-        codegenReturn(lvar_names, stmt_rest);
+        genReturn(lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "while")) {
-        codegenWhile(fn_arg_names, lvar_names, stmt_rest);
+        genWhile(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "case")) {
-        codegenCase(fn_arg_names, lvar_names, stmt_rest);
+        genCase(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "_cmt")) {
-        codegenVmComment(stmt_rest.get(0).str[0..]);
+        genVmComment(stmt_rest.get(0).str[0..]);
     } else {
         panic("Unsupported statement ({})", .{stmt_head});
     }
 }
 
-fn codegenStmts(
+fn genStmts(
     fn_arg_names: *Names,
     lvar_names: *Names,
     stmts: *NodeList,
@@ -558,11 +558,11 @@ fn codegenStmts(
     var i: usize = 0;
     while (i < stmts.len) : (i += 1) {
         const stmt = stmts.get(i).getList();
-        codegenStmt(fn_arg_names, lvar_names, stmt);
+        genStmt(fn_arg_names, lvar_names, stmt);
     }
 }
 
-fn codegenFuncDef(top_stmt: *NodeList) void {
+fn genFuncDef(top_stmt: *NodeList) void {
     const fn_name = top_stmt.get(0).getStr();
     const fn_arg_vals = top_stmt.get(1).getList();
     const body = top_stmt.get(2).getList();
@@ -591,9 +591,9 @@ fn codegenFuncDef(top_stmt: *NodeList) void {
             const varName = stmt_rest.get(0).getStr();
             lvar_names.add(varName);
 
-            codegenVar(fn_arg_names, lvar_names, stmt_rest);
+            genVar(fn_arg_names, lvar_names, stmt_rest);
         } else {
-            codegenStmt(fn_arg_names, lvar_names, stmt);
+            genStmt(fn_arg_names, lvar_names, stmt);
         }
     }
 
@@ -602,7 +602,7 @@ fn codegenFuncDef(top_stmt: *NodeList) void {
     puts("  ret");
 }
 
-fn codegenTopStmts(top_stmts: *NodeList) void {
+fn genTopStmts(top_stmts: *NodeList) void {
     var i: usize = 1;
     while (i < top_stmts.len) : (i += 1) {
         const top_stmt = top_stmts.get(i).getList();
@@ -611,7 +611,7 @@ fn codegenTopStmts(top_stmts: *NodeList) void {
         const stmt_rest = rest(top_stmt);
 
         if (strEq(stmt_head, "func")) {
-            codegenFuncDef(stmt_rest);
+            genFuncDef(stmt_rest);
         } else {
             panic("must not happen ({})", .{stmt_head});
         }
@@ -627,5 +627,5 @@ pub fn main() !void {
     puts("  call main");
     puts("  exit");
 
-    codegenTopStmts(top_stmts);
+    genTopStmts(top_stmts);
 }
