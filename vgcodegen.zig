@@ -115,19 +115,6 @@ fn toAsmArg(
     }
 }
 
-fn vramMatch(str: []const u8) bool {
-    return strEq(str[0..5], "vram[") and str[str.len - 1] == ']';
-}
-
-fn getVramParam(str: []const u8) []const u8 {
-    const i = utils.indexOf(str, ']', 5);
-    if (i == -1) {
-        panic("must not happen", .{});
-    } else {
-        return str[5..@intCast(usize, i)];
-    }
-}
-
 fn matchNumber(str: []const u8) bool {
     var i: usize = 0;
     while (i < str.len) : (i += 1) {
@@ -253,25 +240,6 @@ fn genExpr(
         puts_fmt("  cp {} reg_a", .{push_arg});
     } else {
         switch (expr.kind) {
-            .STR => {
-                if (vramMatch(expr.getStr())) {
-                    const vram_arg = getVramParam(expr.getStr());
-
-                    if (matchNumber(vram_arg)) {
-                        puts_fmt("  get_vram {} reg_a", .{vram_arg});
-                    } else {
-                        var buf2: [8]u8 = undefined;
-                        const vram_ref: []const u8 = toAsmArg(&buf2, fn_arg_names, lvar_names, Node.initStr(vram_arg));
-                        if (0 < vram_ref.len) {
-                            puts_fmt("  get_vram {} reg_a", .{vram_ref});
-                        } else {
-                            panic("not_yet_impl", .{});
-                        }
-                    }
-                } else {
-                    panic("not_yet_impl", .{});
-                }
-            },
             .LIST => {
                 _genExprBinary(fn_arg_names, lvar_names, expr.getList());
             },
@@ -345,30 +313,7 @@ fn genSet(
     if (0 < arg_dest.len) {
         puts_fmt("  cp reg_a {}", .{ arg_dest });
     } else {
-        switch (dest.kind) {
-            .STR => {
-                if (vramMatch(dest.getStr())) {
-                    const vram_arg = getVramParam(dest.getStr());
-
-                    if (matchNumber(vram_arg)) {
-                        puts_fmt("  set_vram {} reg_a", .{ vram_arg });
-                    } else {
-                        var buf3: [8]u8 = undefined;
-                        const vram_ref = toAsmArg(&buf3, fn_arg_names, lvar_names, Node.initStr(vram_arg));
-                        if (0 < vram_ref.len) {
-                            puts_fmt("  set_vram {} reg_a", .{ vram_ref });
-                        } else {
-                            panic("not_yet_impl", .{});
-                        }
-                    }
-                } else {
-                    panic("not_yet_impl", .{});
-                }
-            },
-            else => {
-                panic("not_yet_impl", .{});
-            },
-        }
+        panic("not_yet_impl", .{});
     }
 }
 
