@@ -3,5 +3,5 @@ https://memo88.hatenablog.com/entry/2021/01/07/235019
 
 ```
 $ zig version
-0.6.0
+0.7.1
 ```

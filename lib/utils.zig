@@ -4,38 +4,38 @@ const std = @import("std");
 const panic = std.debug.panic;
 const OutStream = std.io.OutStream;
 
-fn print_to(file: std.fs.File, val: var) void {
+fn print_to(file: std.fs.File, val: anytype) void {
     file.outStream().print("{}", .{val}) catch |err| {
         panic("error ({})", .{err});
     };
 }
 
-pub fn print(val: var) void {
+pub fn print(val: anytype) void {
     print_to(std.io.getStdOut(), val);
 }
 
-pub fn puts(val: var) void {
+pub fn puts(val: anytype) void {
     print(val);
     print("\n");
 }
 
-pub fn puts_fmt(comptime format: []const u8, args: var) void {
+pub fn puts_fmt(comptime format: []const u8, args: anytype) void {
     std.io.getStdOut().outStream().print(format, args) catch |err| {
         panic("error ({})", .{err});
     };
     print("\n");
 }
 
-pub fn print_e(val: var) void {
+pub fn print_e(val: anytype) void {
     print_to(std.io.getStdErr(), val);
 }
 
-pub fn puts_e(val: var) void {
+pub fn puts_e(val: anytype) void {
     print_e(val);
     print_e("\n");
 }
 
-pub fn putskv_e(key: []const u8, val: var) void {
+pub fn putskv_e(key: []const u8, val: anytype) void {
     print_e(key);
     print_e(" (");
     print_e(val);
@@ -237,7 +237,7 @@ pub fn parseInt(str: []const u8) i32 {
     };
 }
 
-pub fn bufPrint(buf: []u8, comptime fmt: []const u8, args: var) []u8 {
+pub fn bufPrint(buf: []u8, comptime fmt: []const u8, args: anytype) []u8 {
     return std.fmt.bufPrint(buf, fmt, args) catch |err| {
         panic("err ({})", .{err});
     };

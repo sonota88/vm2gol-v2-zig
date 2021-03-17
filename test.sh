@@ -11,7 +11,7 @@ print_project_dir() {
 export PROJECT_DIR="$(print_project_dir)"
 export TEST_DIR="${PROJECT_DIR}/test"
 export TEMP_DIR="${PROJECT_DIR}/z_tmp"
-ZIG=zig-0.6.0
+ZIG=zig-0.7.1
 EXE_FILE=${PROJECT_DIR}/bin/app
 
 MAX_ID_JSON=6
