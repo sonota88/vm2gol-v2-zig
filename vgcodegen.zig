@@ -327,9 +327,9 @@ fn genCallSet(
     puts_fn("genCallSet");
 
     const lvar_name = stmt_rest.get(0).getStr();
-    const fn_temp = stmt_rest.get(1).getList();
+    const funcall = stmt_rest.get(1).getList();
 
-    genCall(fn_arg_names, lvar_names, fn_temp);
+    genCall(fn_arg_names, lvar_names, funcall);
 
     var buf: [8]u8 = undefined;
     toLvarRef(buf[0..], lvar_names, lvar_name);
