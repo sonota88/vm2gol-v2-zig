@@ -329,25 +329,7 @@ fn genCallSet(
     const lvar_name = stmt_rest.get(0).getStr();
     const fn_temp = stmt_rest.get(1).getList();
 
-    const fn_name = head(fn_temp).getStr();
-    const fn_args = rest(fn_temp);
-
-    if (1 <= fn_args.size()) {
-        var i: usize = fn_args.size() - 1;
-        while (true) : (i -= 1) {
-            const fn_arg = fn_args.get(i);
-            genExpr(fn_arg_names, lvar_names, fn_arg);
-            puts("  push reg_a");
-
-            if (i == 0) {
-                break;
-            }
-        }
-    }
-
-    puts_fmt("  _cmt call_set~~{}", .{fn_name});
-    puts_fmt("  call {}", .{fn_name});
-    puts_fmt("  add_sp {}", .{fn_args.size()});
+    genCall(fn_arg_names, lvar_names, fn_temp);
 
     var buf: [8]u8 = undefined;
     toLvarRef(buf[0..], lvar_names, lvar_name);
