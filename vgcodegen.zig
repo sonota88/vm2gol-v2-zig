@@ -77,6 +77,10 @@ fn toLvarRef(dest: []u8, names: *Names, name: []const u8) void {
     dest[ret.len] = 0;
 }
 
+fn formatIndirection(buf: []u8, base: []const u8, disp: i32) []u8 {
+    return bufPrint(buf, "[{}:{}]", .{base, disp});
+}
+
 fn toAsmArg(
     buf: [*]u8,
     fn_arg_names: *Names,
