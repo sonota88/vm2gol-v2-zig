@@ -387,7 +387,7 @@ fn genWhile(
 fn genCase(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    when_blocks: *NodeList,
+    when_clauses: *NodeList,
 ) void {
     puts_fn("genCase");
 
@@ -407,12 +407,12 @@ fn genCase(
     puts_fmt("  # -->> case_{}", .{label_id});
 
     var i: usize = 0;
-    while (i < when_blocks.len) : (i += 1) {
-        const when_block = when_blocks.get(i).getList();
+    while (i < when_clauses.len) : (i += 1) {
+        const when_clause = when_clauses.get(i).getList();
         when_idx += 1;
 
-        const cond = head(when_block);
-        const _rest = rest(when_block);
+        const cond = head(when_clause);
+        const _rest = rest(when_clause);
 
         puts_fmt("  # when_{}_{}", .{ label_id, when_idx });
 
