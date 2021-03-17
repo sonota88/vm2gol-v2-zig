@@ -498,22 +498,22 @@ fn codegenCase(
 
         puts_fmt("  # when_{}_{}", .{ label_id, when_idx });
 
-            puts("  # -->> expr");
-            codegenExpr(fn_arg_names, lvar_names, cond);
-            puts("  # <<-- expr");
+        puts("  # -->> expr");
+        codegenExpr(fn_arg_names, lvar_names, cond);
+        puts("  # <<-- expr");
 
-            puts("  set_reg_b 1");
+        puts("  set_reg_b 1");
 
-            puts("  compare");
-            puts_fmt("  jump_eq {}_{}", .{ label_when_head, when_idx });
-            puts_fmt("  jump {}_{}", .{ label_end_when_head, when_idx });
+        puts("  compare");
+        puts_fmt("  jump_eq {}_{}", .{ label_when_head, when_idx });
+        puts_fmt("  jump {}_{}", .{ label_end_when_head, when_idx });
 
-            puts_fmt("label {}_{}", .{ label_when_head, when_idx });
+        puts_fmt("label {}_{}", .{ label_when_head, when_idx });
 
-            codegenStmts(fn_arg_names, lvar_names, _rest);
+        codegenStmts(fn_arg_names, lvar_names, _rest);
 
-            puts_fmt("  jump {}", .{label_end});
-            puts_fmt("label {}_{}", .{ label_end_when_head, when_idx });
+        puts_fmt("  jump {}", .{label_end});
+        puts_fmt("label {}_{}", .{ label_end_when_head, when_idx });
     }
 
     puts_fmt("label end_case_{}", .{label_id});
