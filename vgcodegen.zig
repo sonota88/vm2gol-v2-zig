@@ -218,10 +218,6 @@ fn genExpr(
         .LIST => {
             _genExprBinary(fn_arg_names, lvar_names, expr.getList());
         },
-        else => {
-            putskv_e("expr", expr);
-            panic("not_yet_impl", .{});
-        },
     }
 }
 
