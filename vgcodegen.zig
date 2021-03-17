@@ -404,38 +404,7 @@ fn codegenReturn(
     stmt_rest: *NodeList,
 ) void {
     const retval = head(stmt_rest);
-    var buf1: [16]u8 = undefined;
-    const asm_arg = toAsmArg(&buf1, Names.empty(), lvar_names, retval);
-    if (0 < asm_arg.len) {
-        puts_fmt("  cp {} reg_a", .{asm_arg});
-    } else {
-        switch (retval.kind) {
-            .STR => {
-                const str = retval.getStr();
-
-                if (vramMatch(str)) {
-                    const vram_arg = getVramParam(str);
-
-                    if (matchNumber(vram_arg)) {
-                        panic("not_yet_impl", .{});
-                    } else {
-                        var buf2: [8]u8 = undefined;
-                        const vram_ref = toAsmArg(&buf1, Names.empty(), lvar_names, Node.initStr(vram_arg));
-                        if (0 < vram_ref.len) {
-                            puts_fmt("  get_vram {} reg_a", .{vram_ref});
-                        } else {
-                            panic("not_yet_impl", .{});
-                        }
-                    }
-                } else {
-                    panic("not_yet_impl", .{});
-                }
-            },
-            else => {
-                panic("not_yet_impl", .{});
-            },
-        }
-    }
+    codegenExpr(Names.empty(), lvar_names, retval);
 }
 
 fn codegenVmComment(cmt: []const u8) void {
