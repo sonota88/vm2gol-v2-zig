@@ -51,17 +51,13 @@ fn rest(list: *NodeList) *NodeList {
 
 // --------------------------------
 
-fn toFnArgRef(dest: []u8, names: *Names, name: []const u8) void {
+fn fnArgDisp(names: *Names, name: []const u8) i32 {
     const i = names.indexOf(name);
     if (i == -1) {
         panic("fn arg not found", .{});
     }
 
-    const ret: []u8 = std.fmt.bufPrint(dest, "[bp:{}]", .{i + 2}) catch |err| {
-        panic("err ({})", .{err});
-    };
-
-    dest[ret.len] = 0;
+    return i + 2;
 }
 
 fn toLvarRef(dest: []u8, names: *Names, name: []const u8) void {
@@ -113,10 +109,8 @@ fn toAsmArg(
                 const len = strlen(buf2[0..]);
                 return buf[0..len];
             } else if (0 <= fn_arg_names.indexOf(str)) {
-                toFnArgRef(buf2[0..], fn_arg_names, str);
-                utils.strcpy(buf, buf2[0..]);
-                const len = strlen(buf2[0..]);
-                return buf[0..len];
+                const disp = fnArgDisp(fn_arg_names, str);
+                return formatIndirection(buf2[0..], "bp", disp);
             } else {
                 return "";
             }
