@@ -431,7 +431,7 @@ fn codegenWhile(
 ) void {
     puts_fn("codegenWhile");
 
-    const cond_expr = stmt_rest.get(0).getList();
+    const cond_expr = stmt_rest.get(0);
     const body = stmt_rest.get(1).getList();
 
     const label_id = getLabelId();
@@ -449,7 +449,7 @@ fn codegenWhile(
 
     puts_fmt("label {}", .{label_begin});
 
-    _codegenExprBinary(fn_arg_names, lvar_names, cond_expr);
+    codegenExpr(fn_arg_names, lvar_names, cond_expr);
 
     puts("  set_reg_b 1");
     puts("  compare");
@@ -493,17 +493,18 @@ fn codegenCase(
         const when_block = when_blocks.get(i).getList();
         when_idx += 1;
 
-        const cond = head(when_block).getList();
+        const cond = head(when_block);
+        const cond_list = cond.getList();
         const _rest = rest(when_block);
 
-        const cond_head = head(cond).getStr();
-        // const cond_rest = rest(cond);
+        const cond_head = head(cond_list).getStr();
+        // const cond_rest = rest(cond_list);
 
         puts_fmt("  # when_{}_{}", .{ label_id, when_idx });
 
         if (strEq(cond_head, "eq")) {
             puts("  # -->> expr");
-            _codegenExprBinary(fn_arg_names, lvar_names, cond);
+            codegenExpr(fn_arg_names, lvar_names, cond);
             puts("  # <<-- expr");
 
             puts("  set_reg_b 1");
