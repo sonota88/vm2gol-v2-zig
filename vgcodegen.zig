@@ -60,17 +60,13 @@ fn fnArgDisp(names: *Names, name: []const u8) i32 {
     return i + 2;
 }
 
-fn toLvarRef(dest: []u8, names: *Names, name: []const u8) void {
+fn lvarDisp(dest: []u8, names: *Names, name: []const u8) i32 {
     const i = names.indexOf(name);
     if (i == -1) {
         panic("lvar not found", .{});
     }
 
-    const ret: []u8 = std.fmt.bufPrint(dest, "[bp:-{}]", .{i + 1}) catch |err| {
-        panic("err ({})", .{err});
-    };
-
-    dest[ret.len] = 0;
+    return -(i + 1);
 }
 
 fn formatIndirection(buf: []u8, base: []const u8, disp: i32) []u8 {
@@ -104,10 +100,8 @@ fn toAsmArg(
             var buf2: [16]u8 = undefined;
             const str = node.getStr();
             if (0 <= lvar_names.indexOf(str)) {
-                toLvarRef(buf2[0..], lvar_names, str);
-                utils.strcpy(buf, buf2[0..]);
-                const len = strlen(buf2[0..]);
-                return buf[0..len];
+                const disp = lvarDisp(buf2[0..], lvar_names, str);
+                return formatIndirection(buf2[0..], "bp", disp);
             } else if (0 <= fn_arg_names.indexOf(str)) {
                 const disp = fnArgDisp(fn_arg_names, str);
                 return formatIndirection(buf2[0..], "bp", disp);
@@ -330,10 +324,9 @@ fn genCallSet(
     genCall(fn_arg_names, lvar_names, funcall);
 
     var buf: [8]u8 = undefined;
-    toLvarRef(buf[0..], lvar_names, lvar_name);
-    puts_fmt("  cp reg_a {}", .{
-        buf[0..strlen(buf[0..])],
-    });
+    const disp = lvarDisp(buf[0..], lvar_names, lvar_name);
+    var cp_dest = formatIndirection(buf[0..], "bp", disp);
+    puts_fmt("  cp reg_a {}", .{ cp_dest });
 }
 
 fn genSet(
