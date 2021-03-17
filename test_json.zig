@@ -4,38 +4,38 @@ const std = @import("std");
 const utils = @import("lib/utils.zig");
 const json = @import("lib/json.zig");
 const types = @import("lib/types.zig");
-const NodeList = types.NodeList;
+const List = types.List;
 const Node = types.Node;
 
-pub fn newlist() !*NodeList {
-    return try NodeList.init();
+pub fn newlist() !*List {
+    return try List.init();
 }
 
-fn make_test_json_data_1() !*NodeList {
+fn make_test_json_data_1() !*List {
     var list = try newlist();
     return list;
 }
 
-fn make_test_json_data_2() !*NodeList {
+fn make_test_json_data_2() !*List {
     var list = try newlist();
     try list.addInt(1);
     return list;
 }
 
-fn make_test_json_data_3() !*NodeList {
+fn make_test_json_data_3() !*List {
     var list = try newlist();
     try list.addStr("fdsa");
     return list;
 }
 
-fn make_test_json_data_4() !*NodeList {
+fn make_test_json_data_4() !*List {
     var list = try newlist();
     try list.addInt(-123);
     try list.addStr("fdsa");
     return list;
 }
 
-fn make_test_json_data_5() !*NodeList {
+fn make_test_json_data_5() !*List {
     var list = try newlist();
 
     const inner_list = try newlist();
@@ -44,7 +44,7 @@ fn make_test_json_data_5() !*NodeList {
     return list;
 }
 
-fn make_test_json_data_6() !*NodeList {
+fn make_test_json_data_6() !*List {
     var list = try newlist();
 
     try list.addInt(1);

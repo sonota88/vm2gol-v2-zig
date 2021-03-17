@@ -20,7 +20,7 @@ const strlen = utils.strlen;
 const allocator = std.heap.page_allocator;
 
 const types = @import("lib/types.zig");
-const NodeList = types.NodeList;
+const List = types.List;
 const Node = types.Node;
 const NodeKind = types.NodeKind;
 const Names = types.Names;
@@ -36,12 +36,12 @@ fn getLabelId() i32 {
     return gLabelId;
 }
 
-fn head(list: *NodeList) *Node {
+fn head(list: *List) *Node {
     return list.get(0);
 }
 
-fn rest(list: *NodeList) *NodeList {
-    const new_list = NodeList.init();
+fn rest(list: *List) *List {
+    const new_list = List.init();
     var i: usize = 1;
     while (i < list.len) : (i += 1) {
         new_list.add(list.get(i));
@@ -130,7 +130,7 @@ fn matchNumber(str: []const u8) bool {
 fn genVar(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *NodeList,
+    stmt_rest: *List,
 ) void {
     puts("  sub_sp 1");
 
@@ -198,7 +198,7 @@ fn genExprNeq() void {
 fn _genExprBinary(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    expr: *NodeList,
+    expr: *List,
 ) void {
     // puts_fn("_genExprBinary");
 
@@ -251,7 +251,7 @@ fn genExpr(
     }
 }
 
-fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) void {
+fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *List) void {
     puts_fn("genCall");
 
     const fn_name = head(stmt_rest).getStr();
@@ -282,7 +282,7 @@ fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *NodeList) void 
 fn genCallSet(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *NodeList,
+    stmt_rest: *List,
 ) void {
     puts_fn("genCallSet");
 
@@ -300,7 +300,7 @@ fn genCallSet(
 fn genSet(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *NodeList,
+    stmt_rest: *List,
 ) void {
     puts_fn("genSet");
     const dest = stmt_rest.get(0);
@@ -319,7 +319,7 @@ fn genSet(
 
 fn genReturn(
     lvar_names: *Names,
-    stmt_rest: *NodeList,
+    stmt_rest: *List,
 ) void {
     const retval = head(stmt_rest);
     genExpr(Names.empty(), lvar_names, retval);
@@ -345,7 +345,7 @@ fn genVmComment(cmt: []const u8) void {
 fn genWhile(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *NodeList,
+    stmt_rest: *List,
 ) void {
     puts_fn("genWhile");
 
@@ -387,7 +387,7 @@ fn genWhile(
 fn genCase(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    when_clauses: *NodeList,
+    when_clauses: *List,
 ) void {
     puts_fn("genCase");
 
@@ -442,7 +442,7 @@ fn genCase(
 fn genStmt(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt: *NodeList,
+    stmt: *List,
 ) void {
     puts_fn("genStmt");
 
@@ -471,7 +471,7 @@ fn genStmt(
 fn genStmts(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmts: *NodeList,
+    stmts: *List,
 ) void {
     var i: usize = 0;
     while (i < stmts.len) : (i += 1) {
@@ -480,7 +480,7 @@ fn genStmts(
     }
 }
 
-fn genFuncDef(top_stmt: *NodeList) void {
+fn genFuncDef(top_stmt: *List) void {
     const fn_name = top_stmt.get(0).getStr();
     const fn_arg_vals = top_stmt.get(1).getList();
     const body = top_stmt.get(2).getList();
@@ -520,7 +520,7 @@ fn genFuncDef(top_stmt: *NodeList) void {
     puts("  ret");
 }
 
-fn genTopStmts(top_stmts: *NodeList) void {
+fn genTopStmts(top_stmts: *List) void {
     var i: usize = 1;
     while (i < top_stmts.len) : (i += 1) {
         const top_stmt = top_stmts.get(i).getList();

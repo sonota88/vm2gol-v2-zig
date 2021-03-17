@@ -10,15 +10,15 @@ const puts_e = utils.puts_e;
 const types = @import("types.zig");
 const NodeKind = types.NodeKind;
 const Node = types.Node;
-const NodeList = types.NodeList;
+const List = types.List;
 
 const allocator = std.heap.page_allocator;
 
 const ParseRetval = struct {
-    list: *NodeList,
+    list: *List,
     size: usize,
 
-    fn init(list: *NodeList, size: usize) *ParseRetval {
+    fn init(list: *List, size: usize) *ParseRetval {
         var obj = allocator.create(ParseRetval) catch |err| {
             panic("Failed to allocate ({})", .{err});
         };
@@ -29,7 +29,7 @@ const ParseRetval = struct {
 };
 
 pub fn parseList(input_json: []const u8) *ParseRetval {
-    const list = NodeList.init();
+    const list = List.init();
     var pos: usize = 1;
     var rest: []const u8 = undefined;
 
@@ -72,7 +72,7 @@ pub fn parseList(input_json: []const u8) *ParseRetval {
     return ParseRetval.init(list, pos);
 }
 
-pub fn parse(input_json: []const u8) *NodeList {
+pub fn parse(input_json: []const u8) *List {
     if (input_json[0] == '[') {
         const retval = parseList(input_json);
         return retval.list;
@@ -101,15 +101,15 @@ fn printNodeAsJson(node: *Node, lv: u8) void {
             print("\"");
         },
         .LIST => {
-            const list: ?*NodeList = node.list;
+            const list: ?*List = node.list;
             if (list) |_list| {
-                printNodeListAsJson(_list, lv + 1);
+                printListAsJson(_list, lv + 1);
             }
         },
     }
 }
 
-fn printNodeListAsJson(list: *NodeList, lv: u8) void {
+fn printListAsJson(list: *List, lv: u8) void {
     printIndent(lv);
     print("[\n");
 
@@ -128,7 +128,7 @@ fn printNodeListAsJson(list: *NodeList, lv: u8) void {
     print("]");
 }
 
-pub fn printAsJson(list: *NodeList) void {
-    printNodeListAsJson(list, 0);
+pub fn printAsJson(list: *List) void {
+    printListAsJson(list, 0);
     print("\n");
 }

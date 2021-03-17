@@ -18,7 +18,7 @@ pub const Node = struct {
     kind: NodeKind,
     int: ?i32,
     str: [64]u8,
-    list: ?*NodeList,
+    list: ?*List,
 
     const Self = @This();
 
@@ -45,7 +45,7 @@ pub const Node = struct {
         return node;
     }
 
-    pub fn initList(list: *NodeList) *Self {
+    pub fn initList(list: *List) *Self {
         const node = Self.init();
         node.kind = NodeKind.LIST;
         node.list = list;
@@ -73,7 +73,7 @@ pub const Node = struct {
         return self.str[0..len];
     }
 
-    pub fn getList(self: *Self) *NodeList {
+    pub fn getList(self: *Self) *List {
         if (self.kind != NodeKind.LIST) {
             panic("Invalid node kind", .{});
         }
@@ -89,14 +89,14 @@ pub const Node = struct {
     }
 };
 
-pub const NodeList = struct {
+pub const List = struct {
     nodes: [64]*Node,
     len: usize,
 
     const Self = @This();
 
     pub fn init() *Self {
-        var obj = allocator.create(NodeList) catch |err| {
+        var obj = allocator.create(List) catch |err| {
             panic("Failed to allocate ({})", .{err});
         };
         obj.len = 0;
@@ -126,12 +126,12 @@ pub const NodeList = struct {
         self.add(node);
     }
 
-    pub fn addList(self: *Self, list: *NodeList) void {
+    pub fn addList(self: *Self, list: *List) void {
         const node = Node.initList(list);
         self.add(node);
     }
 
-    pub fn addListAll(self: *Self, list: *NodeList) void {
+    pub fn addListAll(self: *Self, list: *List) void {
         var i: usize = 0;
         while (i < list.len) : (i += 1) {
             self.add(list.get(i));

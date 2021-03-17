@@ -15,7 +15,7 @@ const strEq = utils.strEq;
 const allocator = std.heap.page_allocator;
 
 const types = @import("lib/types.zig");
-const NodeList = types.NodeList;
+const List = types.List;
 const Node = types.Node;
 
 const json = @import("lib/json.zig");
@@ -168,8 +168,8 @@ fn consumeSym(str: []const u8) void {
     pos += 1;
 }
 
-fn newlist() *NodeList {
-    return NodeList.init();
+fn newlist() *List {
+    return List.init();
 }
 
 // --------------------------------
@@ -219,7 +219,7 @@ fn parseArgsRest() ?*Node {
     return parseArg();
 }
 
-fn parseArgs() *NodeList {
+fn parseArgs() *List {
     puts_fn("parseArgs");
 
     const args = newlist();
@@ -243,7 +243,7 @@ fn parseArgs() *NodeList {
     return args;
 }
 
-fn parseFunc() *NodeList {
+fn parseFunc() *List {
     puts_fn("parseFunc");
 
     consumeKw("func");
@@ -285,7 +285,7 @@ fn parseFunc() *NodeList {
     return func;
 }
 
-fn parseVarDeclare() *NodeList {
+fn parseVarDeclare() *List {
     puts_fn("parseVarDeclare");
 
     const t = peek(0);
@@ -300,7 +300,7 @@ fn parseVarDeclare() *NodeList {
     return stmt;
 }
 
-fn parseVarInit() *NodeList {
+fn parseVarInit() *List {
     const t = peek(0);
     pos += 1;
     const var_name = t.getStr();
@@ -318,7 +318,7 @@ fn parseVarInit() *NodeList {
     return stmt;
 }
 
-fn parseVar() *NodeList {
+fn parseVar() *List {
     puts_fn("parseVar");
 
     consumeKw("var");
@@ -405,7 +405,7 @@ fn parseExpr() *Node {
     }
 }
 
-fn parseSet() *NodeList {
+fn parseSet() *List {
     puts_fn("parseSet");
 
     consumeKw("set");
@@ -427,7 +427,7 @@ fn parseSet() *NodeList {
     return stmt;
 }
 
-fn parseFuncall() *NodeList {
+fn parseFuncall() *List {
     puts_fn("parseFuncall");
 
     const t = peek(0);
@@ -445,7 +445,7 @@ fn parseFuncall() *NodeList {
     return list;
 }
 
-fn parseCall() *NodeList {
+fn parseCall() *List {
     puts_fn("parseCall");
 
     consumeKw("call");
@@ -461,7 +461,7 @@ fn parseCall() *NodeList {
     return ret;
 }
 
-fn parseCallSet() *NodeList {
+fn parseCallSet() *List {
     puts_fn("parseCallSet");
 
     consumeKw("call_set");
@@ -485,7 +485,7 @@ fn parseCallSet() *NodeList {
     return stmt;
 }
 
-fn parseReturn() *NodeList {
+fn parseReturn() *List {
     puts_fn("parseReturn");
 
     consumeKw("return");
@@ -500,7 +500,7 @@ fn parseReturn() *NodeList {
     return stmt;
 }
 
-fn parseWhile() *NodeList {
+fn parseWhile() *List {
     puts_fn("parseWhile");
 
     consumeKw("while");
@@ -520,12 +520,12 @@ fn parseWhile() *NodeList {
     return stmt;
 }
 
-fn parseWhenClause() *NodeList {
+fn parseWhenClause() *List {
     // puts_fn("parseWhenClause")
     const t = peek(0);
 
     if (t.is(TokenKind.SYM, "}")) {
-        return NodeList.empty();
+        return List.empty();
     }
 
     consumeSym("(");
@@ -547,7 +547,7 @@ fn parseWhenClause() *NodeList {
     return list;
 }
 
-fn parseCase() *NodeList {
+fn parseCase() *List {
     puts_fn("parseCase");
 
     consumeKw("case");
@@ -578,7 +578,7 @@ fn parseCase() *NodeList {
     return stmt;
 }
 
-fn parseVmComment() *NodeList {
+fn parseVmComment() *List {
     puts_fn("parseVmComment");
 
     consumeKw("_cmt");
@@ -597,13 +597,13 @@ fn parseVmComment() *NodeList {
     return ret;
 }
 
-fn parseStmt() *NodeList {
+fn parseStmt() *List {
     puts_fn("parseStmt");
 
     const t = peek(0);
 
     if (t.is(TokenKind.SYM, "}")) {
-        return NodeList.empty();
+        return List.empty();
     }
 
     if (t.strEq("set")) {
@@ -627,7 +627,7 @@ fn parseStmt() *NodeList {
     }
 }
 
-fn parseStmts() *NodeList {
+fn parseStmts() *List {
     const stmts = newlist();
 
     while (!isEnd()) {
@@ -641,7 +641,7 @@ fn parseStmts() *NodeList {
     return stmts;
 }
 
-fn parseTopStmt() *NodeList {
+fn parseTopStmt() *List {
     puts_fn("parseTopStmt");
 
     const t = tokens[pos];
@@ -653,7 +653,7 @@ fn parseTopStmt() *NodeList {
     }
 }
 
-fn parseTopStmts() *NodeList {
+fn parseTopStmts() *List {
     puts_fn("parseTopStmts");
 
     const top_stmts = newlist();
