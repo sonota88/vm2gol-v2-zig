@@ -604,6 +604,19 @@ fn genBuiltinSetVram() void {
     puts("  ret");
 }
 
+fn genBuiltinGetVram() void {
+    puts("");
+    puts("label get_vram");
+    puts("  push bp");
+    puts("  cp sp bp");
+
+    puts("  get_vram [bp:2] reg_a"); // vram_addr dest
+
+    puts("  cp bp sp");
+    puts("  pop bp");
+    puts("  ret");
+}
+
 pub fn main() !void {
     var buf: [20000]u8 = undefined;
     const src = utils.readStdinAll(&buf);
@@ -618,5 +631,6 @@ pub fn main() !void {
     puts("");
     puts("#>builtins");
     genBuiltinSetVram();
+    genBuiltinGetVram();
     puts("#<builtins");
 }
