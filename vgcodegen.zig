@@ -73,48 +73,6 @@ fn formatIndirection(buf: []u8, base: []const u8, disp: i32) []u8 {
     return bufPrint(buf, "[{}:{}]", .{base, disp});
 }
 
-fn toAsmArg(
-    buf: [*]u8,
-    fn_arg_names: *Names,
-    lvar_names: *Names,
-    node: *Node,
-) []const u8 {
-    // puts_fn("toAsmArg");
-    switch (node.kind) {
-        .INT => {
-            if (node.int) |intval| {
-                var buf1: [16]u8 = undefined;
-                const size = std.fmt.formatIntBuf(buf1[0..], intval, 10, false, std.fmt.FormatOptions{});
-
-                var i: usize = 0;
-                while (i < size) : (i += 1) {
-                    buf[i] = buf1[i];
-                }
-
-                return buf[0..size];
-            } else {
-                panic("must not happen", .{});
-            }
-        },
-        .STR => {
-            var buf2: [16]u8 = undefined;
-            const str = node.getStr();
-            if (0 <= lvar_names.indexOf(str)) {
-                const disp = lvarDisp(buf2[0..], lvar_names, str);
-                return formatIndirection(buf2[0..], "bp", disp);
-            } else if (0 <= fn_arg_names.indexOf(str)) {
-                const disp = fnArgDisp(fn_arg_names, str);
-                return formatIndirection(buf2[0..], "bp", disp);
-            } else {
-                return "";
-            }
-        },
-        else => {
-            return "";
-        },
-    }
-}
-
 fn matchNumber(str: []const u8) bool {
     var i: usize = 0;
     while (i < str.len) : (i += 1) {
@@ -233,13 +191,30 @@ fn genExpr(
 ) void {
     puts_fn("genExpr");
 
-    var buf: [8]u8 = undefined;
-    var push_arg: []const u8 = toAsmArg(&buf, fn_arg_names, lvar_names, expr);
-
-    if (0 < push_arg.len) {
-        puts_fmt("  cp {} reg_a", .{push_arg});
-    } else {
         switch (expr.kind) {
+            .INT => {
+                if (expr.int) |intval| {
+                    var buf1: [16]u8 = undefined;
+                    puts_fmt("  cp {} reg_a", .{ intval });
+                } else {
+                    panic("must not happen", .{});
+                }
+            },
+            .STR => {
+                var buf2: [16]u8 = undefined;
+                const str = expr.getStr();
+                if (0 <= lvar_names.indexOf(str)) {
+                    const disp = lvarDisp(buf2[0..], lvar_names, str);
+                    const cp_src = formatIndirection(buf2[0..], "bp", disp);
+                    puts_fmt("  cp {} reg_a", .{ cp_src });
+                } else if (0 <= fn_arg_names.indexOf(str)) {
+                    const disp = fnArgDisp(fn_arg_names, str);
+                    const cp_src = formatIndirection(buf2[0..], "bp", disp);
+                    puts_fmt("  cp {} reg_a", .{ cp_src });
+                } else {
+                    panic("must not happen", .{});
+                }
+            },
             .LIST => {
                 _genExprBinary(fn_arg_names, lvar_names, expr.getList());
             },
@@ -248,7 +223,6 @@ fn genExpr(
                 panic("not_yet_impl", .{});
             },
         }
-    }
 }
 
 fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *List) void {
@@ -308,12 +282,25 @@ fn genSet(
 
     genExpr(fn_arg_names, lvar_names, expr);
 
-    var buf2: [8]u8 = undefined;
-    const arg_dest = toAsmArg(&buf2, fn_arg_names, lvar_names, dest);
-    if (0 < arg_dest.len) {
-        puts_fmt("  cp reg_a {}", .{ arg_dest });
-    } else {
-        panic("not_yet_impl", .{});
+    switch (dest.kind) {
+        .STR => {
+            var buf2: [16]u8 = undefined;
+            const str = dest.getStr();
+            if (0 <= lvar_names.indexOf(str)) {
+                const disp = lvarDisp(buf2[0..], lvar_names, str);
+                const cp_dest = formatIndirection(buf2[0..], "bp", disp);
+                puts_fmt("  cp reg_a {}", .{ cp_dest });
+            } else if (0 <= fn_arg_names.indexOf(str)) {
+                const disp = fnArgDisp(fn_arg_names, str);
+                const cp_dest = formatIndirection(buf2[0..], "bp", disp);
+                puts_fmt("  cp reg_a {}", .{ cp_dest });
+            } else {
+                panic("must not happen", .{});
+            }
+        },
+        else => {
+            panic("not yet implemented", .{});
+        },
     }
 }
 
