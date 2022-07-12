@@ -95,7 +95,7 @@ test_json_nn() {
     return
   fi
 
-  ruby test/diff.rb json $exp_tokens_file $temp_json_file
+  ruby test_common/diff.rb json $exp_tokens_file $temp_json_file
   if [ $? -ne 0 ]; then
     # meld $exp_tokens_file $temp_json_file &
 
@@ -129,7 +129,7 @@ test_lex_nn() {
     return
   fi
 
-  ruby test/diff.rb text $exp_tokens_file $temp_tokens_file
+  ruby test_common/diff.rb text $exp_tokens_file $temp_tokens_file
   if [ $? -ne 0 ]; then
     # meld $exp_tokens_file $temp_tokens_file &
 
@@ -173,7 +173,7 @@ test_parse_nn() {
     return
   fi
 
-  ruby test/diff.rb json $exp_vgt_file $temp_vgt_file
+  ruby test_common/diff.rb json $exp_vgt_file $temp_vgt_file
   if [ $? -ne 0 ]; then
     # meld $exp_vgt_file $temp_vga_file &
 
@@ -232,7 +232,7 @@ test_compile_nn() {
   fi
 
   if [ "$local_errs" = "" ]; then
-    ruby test/diff.rb asm $exp_vga_file $temp_vga_file > $diff_file
+    ruby test_common/diff.rb asm $exp_vga_file $temp_vga_file > $diff_file
     local num_lines=$(wc -l $diff_file | cut -d " " -f 1)
 
     if [ $num_lines -gt 20 ]; then
