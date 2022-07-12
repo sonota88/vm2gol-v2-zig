@@ -182,8 +182,6 @@ test_parse_nn() {
   fi
 }
 
-# --------------------------------
-
 test_parse() {
   local ids="$(get_ids $MAX_ID_PARSE "$@")"
 
@@ -253,8 +251,6 @@ test_compile_nn() {
     fi
   fi
 }
-
-# --------------------------------
 
 test_compile() {
   local ids="$(get_ids $MAX_ID_STEP "$@")"
