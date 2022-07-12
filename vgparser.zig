@@ -380,14 +380,13 @@ fn parseExpr() *Node {
 
     const tl: *Token = peek(0);
 
-    if (tl.is(TokenKind.SYM, "(")) {
-        consumeSym("(");
-        const exprL = parseExpr();
-        consumeSym(")");
-        return parseExprRight(exprL);
-    }
-
     switch (tl.kind) {
+        .SYM => {
+            consumeSym("(");
+            const exprL = parseExpr();
+            consumeSym(")");
+            return parseExprRight(exprL);
+        },
         .INT => {
             pos += 1;
             const n = utils.parseInt(tl.getStr());
