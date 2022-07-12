@@ -379,29 +379,29 @@ fn parseExpr() *Node {
     puts_fn("parseExpr");
 
     const tl: *Token = peek(0);
+    var exprL: *Node = undefined;
 
     switch (tl.kind) {
         .SYM => {
             consumeSym("(");
-            const exprL = parseExpr();
+            exprL = parseExpr();
             consumeSym(")");
-            return parseExprRight(exprL);
         },
         .INT => {
             pos += 1;
             const n = utils.parseInt(tl.getStr());
-            const exprL = Node.initInt(n);
-            return parseExprRight(exprL);
+            exprL = Node.initInt(n);
         },
         .IDENT => {
             pos += 1;
-            const exprL = Node.initStr(tl.getStr());
-            return parseExprRight(exprL);
+            exprL = Node.initStr(tl.getStr());
         },
         else => {
             panic("not_yet_impl", .{});
         },
     }
+
+    return parseExprRight(exprL);
 }
 
 fn parseSet() *List {
