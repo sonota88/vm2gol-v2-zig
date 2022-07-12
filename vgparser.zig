@@ -332,6 +332,31 @@ fn parseVar() *List {
     }
 }
 
+fn _parseExprFactor() *Node {
+    const t: *Token = peek(0);
+
+    switch (t.kind) {
+        .SYM => {
+            consumeSym("(");
+            const expr = parseExpr();
+            consumeSym(")");
+            return expr;
+        },
+        .INT => {
+            pos += 1;
+            const n = utils.parseInt(t.getStr());
+            return Node.initInt(n);
+        },
+        .IDENT => {
+            pos += 1;
+            return Node.initStr(t.getStr());
+        },
+        else => {
+            panic("Invalid token kind", .{});
+        },
+    }
+}
+
 fn parseExprRight(exprL: *Node) *Node {
     puts_fn("parseExprRight");
 
