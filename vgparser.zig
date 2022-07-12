@@ -332,6 +332,17 @@ fn parseVar() *List {
     }
 }
 
+fn isBinaryOp(t: *Token) bool {
+    const s = t.getStr();
+
+    return (
+        strEq(s, "+")
+        or strEq(s, "*")
+        or strEq(s, "==")
+        or strEq(s, "!=")
+    );
+}
+
 fn _parseExprFactor() *Node {
     const t: *Token = peek(0);
 
@@ -400,12 +411,41 @@ fn parseExprRight(exprL: *Node) *Node {
     return Node.initList(exprEls);
 }
 
+fn _convertOp(s: []const u8) []const u8 {
+    if (strEq(s, "+")) {
+        return "+";
+    } else if (strEq(s, "*")) {
+        return "*";
+    } else if (strEq(s, "==")) {
+        return "eq";
+    } else if (strEq(s, "!=")) {
+        return "neq";
+    } else {
+        panic("Unsupported operator", .{});
+    }
+}
+
 fn parseExpr() *Node {
     puts_fn("parseExpr");
 
-    const exprL: *Node = _parseExprFactor();
+    var expr: *Node = _parseExprFactor();
 
-    return parseExprRight(exprL);
+    while (isBinaryOp(peek(0))) {
+        const s = peek(0).getStr();
+        const op = _convertOp(s);
+        pos += 1;
+
+        const exprR = _parseExprFactor();
+
+        const temp = newlist();
+        temp.addStr(op);
+        temp.add(expr);
+        temp.add(exprR);
+
+        expr = Node.initList(temp);
+    }
+
+    return expr;
 }
 
 fn parseSet() *List {
