@@ -1,7 +1,18 @@
+# coding: utf-8
+
+require "json"
+
+Encoding.default_external = "utf-8"
+Encoding.default_internal = "utf-8"
+
 C_MINUS = "\e[0;31m" # red
 C_PLUS  = "\e[0;32m" # green
 C_AT    = "\e[0;34m" # blue
 C_RESET = "\e[m"
+
+def file_read(path)
+  File.open(path) { |f| f.read }
+end
 
 def diff(path_exp, path_act)
   out = `diff -u #{path_exp} #{path_act}`
@@ -33,6 +44,17 @@ def remove_blank_line(infile, outfile)
   system cmd
 end
 
+def format_json(infile, outfile)
+  json = file_read(infile)
+  begin
+    data = JSON.parse(json)
+    File.open(outfile, "wb") { |f| f.print JSON.pretty_generate(data) }
+  rescue JSON::ParserError => e
+    $stderr.puts "failed to parse (#{json.inspect})"
+    raise e
+  end
+end
+
 def remove_builtins(lines)
   new_lines = []
   in_builtins = false
@@ -55,7 +77,7 @@ end
 
 def filter_asm(infile, outfile)
   lines =
-    remove_builtins(File.open(infile).each_line)
+    remove_builtins(file_read(infile).each_line)
     .map do |line|
       if /^(.+?) *# .*$/ =~ line
         $1 + "\n"
@@ -79,6 +101,9 @@ case type
 when "text", "json"
   remove_blank_line exp, exp_tmp
   remove_blank_line act, act_tmp
+when "json-fmt"
+  format_json exp, exp_tmp
+  format_json act, act_tmp
 when "asm"
   filter_asm exp, exp_tmp
   filter_asm act, act_tmp
