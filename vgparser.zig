@@ -368,49 +368,6 @@ fn _parseExprFactor() *Node {
     }
 }
 
-fn parseExprRight(exprL: *Node) *Node {
-    puts_fn("parseExprRight");
-
-    const t = peek(0);
-
-    if (t.is(TokenKind.SYM, ";") or t.is(TokenKind.SYM, ")")) {
-        return exprL;
-    }
-
-    const exprEls = newlist();
-
-    if (t.is(TokenKind.SYM, "+")) {
-        consumeSym("+");
-        const exprR = parseExpr();
-        exprEls.addStr("+");
-        exprEls.add(exprL);
-        exprEls.add(exprR);
-    } else if (t.is(TokenKind.SYM, "*")) {
-        consumeSym("*");
-        const exprR = parseExpr();
-        exprEls.addStr("*");
-        exprEls.add(exprL);
-        exprEls.add(exprR);
-    } else if (t.is(TokenKind.SYM, "==")) {
-        consumeSym("==");
-        const exprR = parseExpr();
-        exprEls.addStr("eq");
-        exprEls.add(exprL);
-        exprEls.add(exprR);
-    } else if (t.is(TokenKind.SYM, "!=")) {
-        consumeSym("!=");
-        const exprR = parseExpr();
-        exprEls.addStr("neq");
-        exprEls.add(exprL);
-        exprEls.add(exprR);
-    } else {
-        putskv_e("t", t);
-        panic("not_yet_impl", .{});
-    }
-
-    return Node.initList(exprEls);
-}
-
 fn _convertOp(s: []const u8) []const u8 {
     if (strEq(s, "+")) {
         return "+";
