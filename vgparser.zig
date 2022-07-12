@@ -403,28 +403,7 @@ fn parseExprRight(exprL: *Node) *Node {
 fn parseExpr() *Node {
     puts_fn("parseExpr");
 
-    const tl: *Token = peek(0);
-    var exprL: *Node = undefined;
-
-    switch (tl.kind) {
-        .SYM => {
-            consumeSym("(");
-            exprL = parseExpr();
-            consumeSym(")");
-        },
-        .INT => {
-            pos += 1;
-            const n = utils.parseInt(tl.getStr());
-            exprL = Node.initInt(n);
-        },
-        .IDENT => {
-            pos += 1;
-            exprL = Node.initStr(tl.getStr());
-        },
-        else => {
-            panic("not_yet_impl", .{});
-        },
-    }
+    const exprL: *Node = _parseExprFactor();
 
     return parseExprRight(exprL);
 }
