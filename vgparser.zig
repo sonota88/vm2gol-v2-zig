@@ -186,49 +186,20 @@ fn parseArg() *Node {
     }
 }
 
-fn parseArgsFirst() ?*Node {
-    // puts_fn("parseArgsFirst");
-    const t = peek(0);
-
-    if (t.is(TokenKind.SYM, ")")) {
-        return null;
-    }
-
-    return parseArg();
-}
-
-fn parseArgsRest() ?*Node {
-    // puts_fn("parseArgsRest");
-    const t = peek(0);
-
-    if (t.is(TokenKind.SYM, ")")) {
-        return null;
-    }
-
-    consumeSym(",");
-
-    return parseArg();
-}
-
 fn parseArgs() *List {
     puts_fn("parseArgs");
 
     const args = newlist();
 
-    const firstArgOpt = parseArgsFirst();
-    if (firstArgOpt) |firstArg| {
-        args.add(firstArg);
-    } else {
+    if (peek(0).is(TokenKind.SYM, ")")) {
         return args;
     }
 
-    while (true) {
-        const restArgOpt = parseArgsRest();
-        if (restArgOpt) |restArg| {
-            args.add(restArg);
-        } else {
-            break;
-        }
+    args.add(parseArg());
+
+    while (peek(0).is(TokenKind.SYM, ",")) {
+        pos += 1;
+        args.add(parseArg());
     }
 
     return args;
