@@ -88,14 +88,18 @@ fn printIndent(lv: u8) void {
     }
 }
 
-fn printNodeAsJson(node: *Node, lv: u8) void {
+fn printNodeAsJson(node: *Node, lv: u8, pretty: bool) void {
     switch (node.kind) {
         .INT => {
-            printIndent(lv + 1);
+            if (pretty) {
+                printIndent(lv + 1);
+            }
             print(node.int);
         },
         .STR => {
-            printIndent(lv + 1);
+            if (pretty) {
+                printIndent(lv + 1);
+            }
             print("\"");
             print(node.getStr());
             print("\"");
@@ -103,32 +107,46 @@ fn printNodeAsJson(node: *Node, lv: u8) void {
         .LIST => {
             const list: ?*List = node.list;
             if (list) |_list| {
-                printListAsJson(_list, lv + 1);
+                printListAsJson(_list, lv + 1, pretty);
             }
         },
     }
 }
 
-fn printListAsJson(list: *List, lv: u8) void {
+fn printListAsJson(list: *List, lv: u8, pretty: bool) void {
     printIndent(lv);
-    print("[\n");
+    print("[");
+    if (pretty) {
+        print("\n");
+    }
 
     var i: usize = 0;
     while (i < list.size()) : (i += 1) {
         const node = list.get(i);
         if (1 <= i) {
-            print(",");
-            print("\n");
+            if (pretty) {
+                print(",\n");
+            } else {
+                print(", ");
+            }
         }
-        printNodeAsJson(node, lv);
+        printNodeAsJson(node, lv, pretty);
     }
-    print("\n");
+    if (pretty) {
+        print("\n");
+    }
 
-    printIndent(lv);
+    if (pretty) {
+        printIndent(lv);
+    }
     print("]");
 }
 
 pub fn printAsJson(list: *List) void {
-    printListAsJson(list, 0);
+    printListAsJson(list, 0, true);
     print("\n");
+}
+
+pub fn printOneLine(list: *List) void {
+    printListAsJson(list, 0, false);
 }
