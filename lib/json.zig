@@ -4,7 +4,7 @@ const std = @import("std");
 const panic = std.debug.panic;
 
 const utils = @import("utils.zig");
-const print = utils.print;
+const _print = utils.print;
 const puts_e = utils.puts_e;
 
 const types = @import("types.zig");
@@ -84,7 +84,7 @@ pub fn parse(input_json: []const u8) *List {
 fn printIndent(lv: u8) void {
     var i: usize = 0;
     while (i < lv) : (i += 1) {
-        print("  ");
+        _print("  ");
     }
 }
 
@@ -94,15 +94,15 @@ fn printNodeAsJson(node: *Node, lv: u8, pretty: bool) void {
             if (pretty) {
                 printIndent(lv + 1);
             }
-            print(node.int);
+            _print(node.int);
         },
         .STR => {
             if (pretty) {
                 printIndent(lv + 1);
             }
-            print("\"");
-            print(node.getStr());
-            print("\"");
+            _print("\"");
+            _print(node.getStr());
+            _print("\"");
         },
         .LIST => {
             const list: ?*List = node.list;
@@ -115,9 +115,9 @@ fn printNodeAsJson(node: *Node, lv: u8, pretty: bool) void {
 
 fn printListAsJson(list: *List, lv: u8, pretty: bool) void {
     printIndent(lv);
-    print("[");
+    _print("[");
     if (pretty) {
-        print("\n");
+        _print("\n");
     }
 
     var i: usize = 0;
@@ -125,26 +125,26 @@ fn printListAsJson(list: *List, lv: u8, pretty: bool) void {
         const node = list.get(i);
         if (1 <= i) {
             if (pretty) {
-                print(",\n");
+                _print(",\n");
             } else {
-                print(", ");
+                _print(", ");
             }
         }
         printNodeAsJson(node, lv, pretty);
     }
     if (pretty) {
-        print("\n");
+        _print("\n");
     }
 
     if (pretty) {
         printIndent(lv);
     }
-    print("]");
+    _print("]");
 }
 
-pub fn printAsJson(list: *List) void {
+pub fn print(list: *List) void {
     printListAsJson(list, 0, true);
-    print("\n");
+    _print("\n");
 }
 
 pub fn printOneLine(list: *List) void {

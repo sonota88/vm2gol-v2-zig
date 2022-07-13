@@ -74,5 +74,5 @@ pub fn main() !void {
     const input_json = utils.readStdinAll(&buf);
 
     const tree = json.parse(input_json);
-    json.printAsJson(tree);
+    json.print(tree);
 }

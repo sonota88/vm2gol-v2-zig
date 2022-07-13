@@ -666,5 +666,5 @@ pub fn main() !void {
 
     const top_stmts = parseTopStmts();
 
-    json.printAsJson(top_stmts);
+    json.print(top_stmts);
 }
