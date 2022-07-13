@@ -1,5 +1,3 @@
-// -*- mode: javascript; js-indent-level: 4 -*-
-
 const std = @import("std");
 const utils = @import("lib/utils.zig");
 const json = @import("lib/json.zig");

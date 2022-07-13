@@ -1,5 +1,3 @@
-// -*- mode: javascript; js-indent-level: 4 -*-
-
 const std = @import("std");
 const panic = std.debug.panic;
 const OutStream = std.io.OutStream;
