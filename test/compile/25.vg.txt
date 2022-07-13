@@ -1,5 +1,0 @@
-// -*- mode: javascript -*-
-
-func main() {
-  call set_vram(1, 42);
-}
