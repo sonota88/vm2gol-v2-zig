@@ -9,15 +9,15 @@ print_project_dir() {
 }
 
 export PROJECT_DIR="$(print_project_dir)"
-export TEST_DIR="${PROJECT_DIR}/test"
+export TEST_DIR="${PROJECT_DIR}/test_common"
 export TEMP_DIR="${PROJECT_DIR}/z_tmp"
 ZIG=zig
 EXE_FILE=${PROJECT_DIR}/bin/app
 
-MAX_ID_JSON=6
-MAX_ID_LEX=2
+MAX_ID_JSON=8
+MAX_ID_LEX=3
 MAX_ID_PARSE=2
-MAX_ID_STEP=29
+MAX_ID_STEP=27
 
 ERRS=""
 
@@ -95,7 +95,7 @@ test_json_nn() {
     return
   fi
 
-  ruby test/diff.rb json $exp_tokens_file $temp_json_file
+  ruby test_common/diff.rb json $exp_tokens_file $temp_json_file
   if [ $? -ne 0 ]; then
     # meld $exp_tokens_file $temp_json_file &
 
@@ -119,9 +119,9 @@ test_lex_nn() {
 
   echo "case ${nn}"
 
-  local input_file="${TEST_DIR}/tokenize/${nn}.vg.txt"
+  local input_file="${TEST_DIR}/lex/${nn}.vg.txt"
   local temp_tokens_file="${TEMP_DIR}/test.tokens.txt"
-  local exp_tokens_file="${TEST_DIR}/tokenize/exp_${nn}.txt"
+  local exp_tokens_file="${TEST_DIR}/lex/exp_${nn}.txt"
 
   run_lex $input_file > $temp_tokens_file
   if [ $? -ne 0 ]; then
@@ -129,7 +129,7 @@ test_lex_nn() {
     return
   fi
 
-  ruby test/diff.rb text $exp_tokens_file $temp_tokens_file
+  ruby test_common/diff.rb text $exp_tokens_file $temp_tokens_file
   if [ $? -ne 0 ]; then
     # meld $exp_tokens_file $temp_tokens_file &
 
@@ -173,7 +173,7 @@ test_parse_nn() {
     return
   fi
 
-  ruby test/diff.rb json $exp_vgt_file $temp_vgt_file
+  ruby test_common/diff.rb json $exp_vgt_file $temp_vgt_file
   if [ $? -ne 0 ]; then
     # meld $exp_vgt_file $temp_vga_file &
 
@@ -232,7 +232,7 @@ test_compile_nn() {
   fi
 
   if [ "$local_errs" = "" ]; then
-    ruby test/diff.rb asm $exp_vga_file $temp_vga_file > $diff_file
+    ruby test_common/diff.rb asm $exp_vga_file $temp_vga_file > $diff_file
     local num_lines=$(wc -l $diff_file | cut -d " " -f 1)
 
     if [ $num_lines -gt 20 ]; then

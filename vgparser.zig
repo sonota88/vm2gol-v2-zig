@@ -88,18 +88,11 @@ fn strToTokenKind(kind_str: []const u8) TokenKind {
 }
 
 fn addToken(line: []const u8, ti: usize) !void {
-    const sep_i = utils.indexOf(line[0..], ':', 1);
-    if (sep_i == -1) {
-        panic("Must contain colon as a separator", .{});
-    }
-    var kind_str: [8]u8 = undefined;
-    var str: [64]u8 = undefined;
-    utils.substring(&kind_str, line[0..], 0, @intCast(usize, sep_i));
-    utils.substring(&str, line[0..], @intCast(usize, sep_i) + 1, line.len);
+    const xs = json.parse(line);
+    const kind = strToTokenKind(xs.get(1).getStr());
+    const str = xs.get(2).getStr();
 
-    const kind = strToTokenKind(utils.strTrim(&kind_str));
-
-    const t: *Token = try Token.create(kind, str[0..]);
+    const t: *Token = try Token.create(kind, str);
     tokens[ti] = t;
 }
 
