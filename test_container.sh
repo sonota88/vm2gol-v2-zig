@@ -9,15 +9,15 @@ print_project_dir() {
 }
 
 export PROJECT_DIR="$(print_project_dir)"
-export TEST_DIR="${PROJECT_DIR}/test"
+export TEST_DIR="${PROJECT_DIR}/test_common"
 export TEMP_DIR="${PROJECT_DIR}/z_tmp"
 ZIG=zig
 EXE_FILE=${PROJECT_DIR}/bin/app
 
-MAX_ID_JSON=6
-MAX_ID_LEX=2
+MAX_ID_JSON=8
+MAX_ID_LEX=3
 MAX_ID_PARSE=2
-MAX_ID_STEP=29
+MAX_ID_STEP=27
 
 ERRS=""
 
@@ -119,9 +119,9 @@ test_lex_nn() {
 
   echo "case ${nn}"
 
-  local input_file="${TEST_DIR}/tokenize/${nn}.vg.txt"
+  local input_file="${TEST_DIR}/lex/${nn}.vg.txt"
   local temp_tokens_file="${TEMP_DIR}/test.tokens.txt"
-  local exp_tokens_file="${TEST_DIR}/tokenize/exp_${nn}.txt"
+  local exp_tokens_file="${TEST_DIR}/lex/exp_${nn}.txt"
 
   run_lex $input_file > $temp_tokens_file
   if [ $? -ne 0 ]; then

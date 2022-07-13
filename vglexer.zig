@@ -11,6 +11,11 @@ const putskv_e = utils.putskv_e;
 const strncmp = utils.strncmp;
 const indexOf = utils.indexOf;
 
+const types = @import("lib/types.zig");
+const List = types.List;
+
+const json = @import("lib/json.zig");
+
 fn matchSpace(ch: u8) usize {
     if (ch == ' ' or ch == '\n') {
         return 1;
@@ -118,9 +123,12 @@ fn matchIdent(rest: []const u8) usize {
 }
 
 fn putsToken(kind: []const u8, str: []const u8) void {
-    print(kind);
-    print(":");
-    print(str);
+    const xs = List.init();
+    xs.addInt(1);
+    xs.addStr(kind);
+    xs.addStr(str);
+
+    json.printOneLine(xs);
     print("\n");
 }
 
