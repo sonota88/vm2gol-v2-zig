@@ -166,7 +166,7 @@ fn newlist() *List {
 // --------------------------------
 
 fn parseArg() *Node {
-    puts_fn("parseArg");
+    // puts_fn("parseArg");
 
     const t = peek(0);
 
@@ -187,7 +187,7 @@ fn parseArg() *Node {
 }
 
 fn parseArgs() *List {
-    puts_fn("parseArgs");
+    // puts_fn("parseArgs");
 
     const args = newlist();
 
