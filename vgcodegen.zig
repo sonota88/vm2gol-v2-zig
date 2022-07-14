@@ -54,6 +54,11 @@ fn asmPrologue() void {
     puts("  cp sp bp");
 }
 
+fn asmEpilogue() void {
+    puts("  cp bp sp");
+    puts("  pop bp");
+}
+
 fn fnArgDisp(names: *Names, name: []const u8) i32 {
     const i = names.indexOf(name);
     if (i == -1) {
@@ -500,8 +505,7 @@ fn genFuncDef(top_stmt: *List) void {
         }
     }
 
-    puts("  cp bp sp");
-    puts("  pop bp");
+    asmEpilogue();
     puts("  ret");
 }
 
@@ -528,8 +532,7 @@ fn genBuiltinSetVram() void {
 
     puts("  set_vram [bp:2] [bp:3]"); // vram_addr value
 
-    puts("  cp bp sp");
-    puts("  pop bp");
+    asmEpilogue();
     puts("  ret");
 }
 
@@ -540,8 +543,7 @@ fn genBuiltinGetVram() void {
 
     puts("  get_vram [bp:2] reg_a"); // vram_addr dest
 
-    puts("  cp bp sp");
-    puts("  pop bp");
+    asmEpilogue();
     puts("  ret");
 }
 
