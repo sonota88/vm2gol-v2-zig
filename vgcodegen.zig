@@ -345,9 +345,6 @@ fn genWhile(
     var buf2: [16]u8 = undefined;
     const label_end = bufPrint(&buf2, "end_while_{}", .{label_id});
 
-    var buf3: [16]u8 = undefined;
-    const label_true = bufPrint(&buf3, "true_{}", .{label_id});
-
     print("\n");
 
     puts_fmt("label {}", .{label_begin});
@@ -358,8 +355,6 @@ fn genWhile(
     puts("  compare");
 
     puts_fmt("  jump_eq {}\n", .{label_end});
-    puts_fmt("  jump {}\n", .{label_true});
-    puts_fmt("label {}\n", .{label_true});
 
     genStmts(fn_arg_names, lvar_names, body);
 
