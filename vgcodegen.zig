@@ -354,11 +354,11 @@ fn genWhile(
 
     genExpr(fn_arg_names, lvar_names, cond_expr);
 
-    puts("  cp 1 reg_b");
+    puts("  cp 0 reg_b");
     puts("  compare");
 
-    puts_fmt("  jump_eq {}\n", .{label_true});
-    puts_fmt("  jump {}\n", .{label_end});
+    puts_fmt("  jump_eq {}\n", .{label_end});
+    puts_fmt("  jump {}\n", .{label_true});
     puts_fmt("label {}\n", .{label_true});
 
     genStmts(fn_arg_names, lvar_names, body);
