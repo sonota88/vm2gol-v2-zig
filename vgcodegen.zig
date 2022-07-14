@@ -49,6 +49,11 @@ fn rest(list: *List) *List {
 
 // --------------------------------
 
+fn asmPrologue() void {
+    puts("  push bp");
+    puts("  cp sp bp");
+}
+
 fn fnArgDisp(names: *Names, name: []const u8) i32 {
     const i = names.indexOf(name);
     if (i == -1) {
@@ -476,8 +481,7 @@ fn genFuncDef(top_stmt: *List) void {
 
     puts_fmt("label {}", .{fn_name});
 
-    puts("  push bp");
-    puts("  cp sp bp");
+    asmPrologue();
 
     i = 0;
     while (i < body.len) : (i += 1) {
@@ -520,8 +524,7 @@ fn genTopStmts(top_stmts: *List) void {
 fn genBuiltinSetVram() void {
     puts("");
     puts("label set_vram");
-    puts("  push bp");
-    puts("  cp sp bp");
+    asmPrologue();
 
     puts("  set_vram [bp:2] [bp:3]"); // vram_addr value
 
@@ -533,8 +536,7 @@ fn genBuiltinSetVram() void {
 fn genBuiltinGetVram() void {
     puts("");
     puts("label get_vram");
-    puts("  push bp");
-    puts("  cp sp bp");
+    asmPrologue();
 
     puts("  get_vram [bp:2] reg_a"); // vram_addr dest
 
