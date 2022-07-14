@@ -51,6 +51,13 @@ fn isKwChar(ch: u8) bool {
     return (('a' <= ch and ch <= 'z') or ch == '_');
 }
 
+fn isKw() bool {
+    return (
+        strncmp(rest, "func", size)
+        or strncmp(rest, "call", size) or strncmp(rest, "case", size) or strncmp(rest, "_cmt", size) or strncmp(rest, "_debug", size)
+    );
+}
+
 fn matchKw(rest: []const u8) usize {
     var size: usize = 0;
 
