@@ -7,6 +7,7 @@ const puts = utils.puts;
 const puts_e = utils.puts_e;
 const putskv_e = utils.putskv_e;
 const strncmp = utils.strncmp;
+const strEq = utils.strEq;
 const indexOf = utils.indexOf;
 
 const types = @import("lib/types.zig");
@@ -51,42 +52,19 @@ fn isKwChar(ch: u8) bool {
     return (('a' <= ch and ch <= 'z') or ch == '_');
 }
 
-fn isKw() bool {
+fn isKw(str: []const u8) bool {
     return (
-        strncmp(rest, "func", size)
-        or strncmp(rest, "call", size) or strncmp(rest, "case", size) or strncmp(rest, "_cmt", size) or strncmp(rest, "_debug", size)
+        strEq(str, "func")
+        or strEq(str, "var")
+        or strEq(str, "set")
+        or strEq(str, "call")
+        or strEq(str, "call_set")
+        or strEq(str, "while")
+        or strEq(str, "case")
+        or strEq(str, "return")
+        or strEq(str, "_cmt")
+        or strEq(str, "_debug")
     );
-}
-
-fn matchKw(rest: []const u8) usize {
-    var size: usize = 0;
-
-    size = 8;
-    if ((strncmp(rest, "call_set", size)) and !isKwChar(rest[size])) {
-        return size;
-    }
-
-    size = 6;
-    if ((strncmp(rest, "return", size) or strncmp(rest, "_debug", size)) and !isKwChar(rest[size])) {
-        return size;
-    }
-
-    size = 5;
-    if ((strncmp(rest, "while", size)) and !isKwChar(rest[size])) {
-        return size;
-    }
-
-    size = 4;
-    if ((strncmp(rest, "func", size) or strncmp(rest, "call", size) or strncmp(rest, "case", size) or strncmp(rest, "_cmt", size)) and !isKwChar(rest[size])) {
-        return size;
-    }
-
-    size = 3;
-    if ((strncmp(rest, "var", size) or strncmp(rest, "set", size)) and !isKwChar(rest[size])) {
-        return size;
-    }
-
-    return 0;
 }
 
 fn matchInt(rest: []const u8) usize {
@@ -169,14 +147,6 @@ fn tokenize(src: []const u8) void {
             continue;
         }
 
-        size = matchKw(rest);
-        if (0 < size) {
-            utils.substring(&temp, rest, 0, size);
-            putsToken(lineno, "kw", temp[0..size]);
-            pos += size;
-            continue;
-        }
-
         size = matchInt(rest);
         if (0 < size) {
             utils.substring(&temp, rest, 0, size);
@@ -196,7 +166,11 @@ fn tokenize(src: []const u8) void {
         size = matchIdent(rest);
         if (0 < size) {
             utils.substring(&temp, rest, 0, size);
-            putsToken(lineno, "ident", temp[0..size]);
+            if (isKw(temp[0..size])) {
+                putsToken(lineno, "kw", temp[0..size]);
+            } else {
+                putsToken(lineno, "ident", temp[0..size]);
+            }
             pos += size;
             continue;
         }
