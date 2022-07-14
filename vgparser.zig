@@ -559,6 +559,19 @@ fn parseVmComment() *List {
     return ret;
 }
 
+fn parseDebug() *List {
+    puts_fn("parseDebug");
+
+    consumeKw("_debug");
+    consumeSym("(");
+    consumeSym(")");
+    consumeSym(";");
+
+    const ret = newlist();
+    ret.addStr("_debug");
+    return ret;
+}
+
 fn parseStmt() *List {
     puts_fn("parseStmt");
 
@@ -582,6 +595,8 @@ fn parseStmt() *List {
         return parseCase();
     } else if (t.strEq("_cmt")) {
         return parseVmComment();
+    } else if (t.strEq("_debug")) {
+        return parseDebug();
     } else {
         putskv_e("pos", pos);
         putskv_e("t", t);
