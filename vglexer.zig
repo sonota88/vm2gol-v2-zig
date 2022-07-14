@@ -60,7 +60,7 @@ fn matchKw(rest: []const u8) usize {
     }
 
     size = 6;
-    if ((strncmp(rest, "return", size)) and !isKwChar(rest[size])) {
+    if ((strncmp(rest, "return", size) or strncmp(rest, "_debug", size)) and !isKwChar(rest[size])) {
         return size;
     }
 

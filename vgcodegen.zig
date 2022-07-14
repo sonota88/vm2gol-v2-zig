@@ -321,6 +321,12 @@ fn genVmComment(cmt: []const u8) void {
     puts_fmt("  _cmt {}", .{temp[0..i]});
 }
 
+fn genDebug() void {
+    puts_fn("genDebug");
+
+    puts("  _debug");
+}
+
 fn genWhile(
     fn_arg_names: *Names,
     lvar_names: *Names,
@@ -442,6 +448,8 @@ fn genStmt(
         genCase(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "_cmt")) {
         genVmComment(stmt_rest.get(0).str[0..]);
+    } else if (strEq(stmt_head, "_debug")) {
+        genDebug();
     } else {
         panic("Unsupported statement ({})", .{stmt_head});
     }
