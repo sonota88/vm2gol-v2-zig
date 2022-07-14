@@ -83,18 +83,6 @@ fn matchNumber(str: []const u8) bool {
 
 // --------------------------------
 
-fn genVar(
-    fn_arg_names: *Names,
-    lvar_names: *Names,
-    stmt_rest: *List,
-) void {
-    puts("  sub_sp 1");
-
-    if (stmt_rest.len == 2) {
-        genSet(fn_arg_names, lvar_names, stmt_rest);
-    }
-}
-
 fn genExprAdd() void {
     puts("  pop reg_b");
     puts("  pop reg_a");
@@ -458,6 +446,18 @@ fn genStmts(
     while (i < stmts.len) : (i += 1) {
         const stmt = stmts.get(i).getList();
         genStmt(fn_arg_names, lvar_names, stmt);
+    }
+}
+
+fn genVar(
+    fn_arg_names: *Names,
+    lvar_names: *Names,
+    stmt_rest: *List,
+) void {
+    puts("  sub_sp 1");
+
+    if (stmt_rest.len == 2) {
+        genSet(fn_arg_names, lvar_names, stmt_rest);
     }
 }
 
