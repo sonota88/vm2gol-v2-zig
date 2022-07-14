@@ -86,7 +86,7 @@ fn printIndent(lv: u8) void {
     }
 }
 
-fn printNodeAsJson(node: *Node, lv: u8, pretty: bool) void {
+fn printNode(node: *Node, lv: u8, pretty: bool) void {
     switch (node.kind) {
         .INT => {
             if (pretty) {
@@ -128,7 +128,7 @@ fn printListAsJson(list: *List, lv: u8, pretty: bool) void {
                 _print(", ");
             }
         }
-        printNodeAsJson(node, lv, pretty);
+        printNode(node, lv, pretty);
     }
     if (pretty) {
         _print("\n");
