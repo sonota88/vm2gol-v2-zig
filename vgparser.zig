@@ -416,11 +416,11 @@ fn parseCall() *List {
 
     consumeSym(";");
 
-    const ret = newlist();
-    ret.addStr("call");
-    ret.addListAll(funcall);
+    const stmt = newlist();
+    stmt.addStr("call");
+    stmt.addListAll(funcall);
 
-    return ret;
+    return stmt;
 }
 
 fn parseCallSet() *List {
@@ -553,10 +553,10 @@ fn parseVmComment() *List {
     consumeSym(")");
     consumeSym(";");
 
-    const ret = newlist();
-    ret.addStr("_cmt");
-    ret.addStr(cmt);
-    return ret;
+    const stmt = newlist();
+    stmt.addStr("_cmt");
+    stmt.addStr(cmt);
+    return stmt;
 }
 
 fn parseDebug() *List {
@@ -567,9 +567,9 @@ fn parseDebug() *List {
     consumeSym(")");
     consumeSym(";");
 
-    const ret = newlist();
-    ret.addStr("_debug");
-    return ret;
+    const stmt = newlist();
+    stmt.addStr("_debug");
+    return stmt;
 }
 
 fn parseStmt() *List {
