@@ -105,13 +105,13 @@ fn printNode(node: *Node, lv: u8, pretty: bool) void {
         .LIST => {
             const list: ?*List = node.list;
             if (list) |_list| {
-                printListAsJson(_list, lv + 1, pretty);
+                printList(_list, lv + 1, pretty);
             }
         },
     }
 }
 
-fn printListAsJson(list: *List, lv: u8, pretty: bool) void {
+fn printList(list: *List, lv: u8, pretty: bool) void {
     printIndent(lv);
     _print("[");
     if (pretty) {
@@ -141,10 +141,10 @@ fn printListAsJson(list: *List, lv: u8, pretty: bool) void {
 }
 
 pub fn print(list: *List) void {
-    printListAsJson(list, 0, true);
+    printList(list, 0, true);
     _print("\n");
 }
 
 pub fn printOneLine(list: *List) void {
-    printListAsJson(list, 0, false);
+    printList(list, 0, false);
 }
