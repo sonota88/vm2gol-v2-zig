@@ -377,9 +377,6 @@ fn genCase(
     var buf1: [32]u8 = undefined;
     const label_end = bufPrint(&buf1, "end_case_{}", .{label_id});
 
-    var buf2: [32]u8 = undefined;
-    const label_when_head = bufPrint(&buf2, "when_{}", .{label_id});
-
     var buf3: [32]u8 = undefined;
     const label_end_when_head = bufPrint(&buf3, "end_when_{}", .{label_id});
 
@@ -404,9 +401,6 @@ fn genCase(
 
         puts("  compare");
         puts_fmt("  jump_eq {}_{}", .{ label_end_when_head, when_idx });
-        puts_fmt("  jump {}_{}", .{ label_when_head, when_idx });
-
-        puts_fmt("label {}_{}", .{ label_when_head, when_idx });
 
         genStmts(fn_arg_names, lvar_names, _rest);
 
