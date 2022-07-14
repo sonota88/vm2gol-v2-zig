@@ -400,11 +400,11 @@ fn genCase(
         genExpr(fn_arg_names, lvar_names, cond);
         puts("  # <<-- expr");
 
-        puts("  cp 1 reg_b");
+        puts("  cp 0 reg_b");
 
         puts("  compare");
-        puts_fmt("  jump_eq {}_{}", .{ label_when_head, when_idx });
-        puts_fmt("  jump {}_{}", .{ label_end_when_head, when_idx });
+        puts_fmt("  jump_eq {}_{}", .{ label_end_when_head, when_idx });
+        puts_fmt("  jump {}_{}", .{ label_when_head, when_idx });
 
         puts_fmt("label {}_{}", .{ label_when_head, when_idx });
 
