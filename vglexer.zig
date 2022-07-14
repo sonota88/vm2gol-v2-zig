@@ -122,7 +122,7 @@ fn matchIdent(rest: []const u8) usize {
     return i;
 }
 
-fn putsToken(kind: []const u8, str: []const u8) void {
+fn putsToken(lineno: u32, kind: []const u8, str: []const u8) void {
     const xs = List.init();
     xs.addInt(1);
     xs.addStr(kind);
@@ -135,6 +135,7 @@ fn putsToken(kind: []const u8, str: []const u8) void {
 fn tokenize(src: []const u8) void {
     var pos: usize = 0;
     var temp: [1024]u8 = undefined;
+    var lineno: u32 = 1;
 
     while (pos < src.len) {
         var size: usize = 0;
@@ -142,6 +143,9 @@ fn tokenize(src: []const u8) void {
 
         size = matchSpace(rest[0]);
         if (0 < size) {
+            if (rest[0] == '\n') {
+                lineno += 1;
+            }
             pos += size;
             continue;
         }
@@ -155,7 +159,7 @@ fn tokenize(src: []const u8) void {
         size = matchStr(rest);
         if (0 < size) {
             utils.substring(&temp, rest, 1, size + 1);
-            putsToken("str", temp[0..size]);
+            putsToken(lineno, "str", temp[0..size]);
             pos += size + 2;
             continue;
         }
@@ -163,7 +167,7 @@ fn tokenize(src: []const u8) void {
         size = matchKw(rest);
         if (0 < size) {
             utils.substring(&temp, rest, 0, size);
-            putsToken("kw", temp[0..size]);
+            putsToken(lineno, "kw", temp[0..size]);
             pos += size;
             continue;
         }
@@ -171,7 +175,7 @@ fn tokenize(src: []const u8) void {
         size = matchInt(rest);
         if (0 < size) {
             utils.substring(&temp, rest, 0, size);
-            putsToken("int", temp[0..size]);
+            putsToken(lineno, "int", temp[0..size]);
             pos += size;
             continue;
         }
@@ -179,7 +183,7 @@ fn tokenize(src: []const u8) void {
         size = matchSymbol(rest);
         if (0 < size) {
             utils.substring(&temp, rest, 0, size);
-            putsToken("sym", temp[0..size]);
+            putsToken(lineno, "sym", temp[0..size]);
             pos += size;
             continue;
         }
@@ -187,7 +191,7 @@ fn tokenize(src: []const u8) void {
         size = matchIdent(rest);
         if (0 < size) {
             utils.substring(&temp, rest, 0, size);
-            putsToken("ident", temp[0..size]);
+            putsToken(lineno, "ident", temp[0..size]);
             pos += size;
             continue;
         }
