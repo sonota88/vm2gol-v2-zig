@@ -125,7 +125,7 @@ test_lex_nn() {
 
   run_lex $input_file > $temp_tokens_file
   if [ $? -ne 0 ]; then
-    ERRS="${ERRS},${nn}_tokenize"
+    ERRS="${ERRS},${nn}_lex"
     return
   fi
 
@@ -133,12 +133,12 @@ test_lex_nn() {
   if [ $? -ne 0 ]; then
     # meld $exp_tokens_file $temp_tokens_file &
 
-    ERRS="${ERRS},tokenize_${nn}_diff"
+    ERRS="${ERRS},lex_${nn}_diff"
     return
   fi
 }
 
-test_tokenize() {
+test_lex() {
   local ids="$(get_ids $MAX_ID_LEX "$@")"
 
   for id in $ids; do
@@ -158,10 +158,10 @@ test_parse_nn() {
   local temp_vgt_file="${TEMP_DIR}/test.vgt.json"
   local exp_vgt_file="${TEST_DIR}/parse/exp_${nn}.vgt.json"
 
-  echo "  tokenize" >&2
+  echo "  lex" >&2
   run_lex $input_file > $temp_tokens_file
   if [ $? -ne 0 ]; then
-    ERRS="${ERRS},${nn}_tokenize"
+    ERRS="${ERRS},${nn}_lex"
     return
   fi
 
@@ -204,12 +204,12 @@ test_compile_nn() {
   local exp_vga_file="${TEST_DIR}/compile/exp_${nn}.vga.txt"
   local diff_file="${TEMP_DIR}/test_${nn}.diff"
 
-  echo "  tokenize" >&2
+  echo "  lex" >&2
   run_lex ${TEST_DIR}/compile/${nn}.vg.txt \
     > $temp_tokens_file
   if [ $? -ne 0 ]; then
-    ERRS="${ERRS},${nn}_tokenize"
-    local_errs="${local_errs},${nn}_tokenize"
+    ERRS="${ERRS},${nn}_lex"
+    local_errs="${local_errs},${nn}_lex"
     return
   fi
 
@@ -270,10 +270,10 @@ test_all() {
     return
   fi
 
-  echo "==== tokenize ===="
-  test_tokenize
+  echo "==== lex ===="
+  test_lex
   if [ $? -ne 0 ]; then
-    ERRS="${ERRS},${nn}_tokenize"
+    ERRS="${ERRS},${nn}_lex"
     return
   fi
 
@@ -305,9 +305,9 @@ case $cmd in
     postproc "json"
     ;;
 
-  tokenize | t*) #task: Run tokenize tests
-    test_tokenize "$@"
-    postproc "tokenize"
+  lex | l*) #task: Run lex tests
+    test_lex "$@"
+    postproc "lex"
     ;;
 
   parse | p*)    #task: Run parse tests
