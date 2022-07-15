@@ -487,10 +487,10 @@ fn genVar(
     }
 }
 
-fn genFuncDef(top_stmt: *List) void {
-    const fn_name = top_stmt.get(0).getStr();
-    const fn_arg_vals = top_stmt.get(1).getList();
-    const body = top_stmt.get(2).getList();
+fn genFuncDef(func_def: *List) void {
+    const fn_name = func_def.get(1).getStr();
+    const fn_arg_vals = func_def.get(2).getList();
+    const body = func_def.get(3).getList();
 
     const fn_arg_names = Names.init();
     var i: usize = 0;
@@ -534,7 +534,7 @@ fn genTopStmts(top_stmts: *List) void {
         const stmt_rest = rest(top_stmt);
 
         if (strEq(stmt_head, "func")) {
-            genFuncDef(stmt_rest);
+            genFuncDef(top_stmt);
         } else {
             panic("must not happen ({})", .{stmt_head});
         }
