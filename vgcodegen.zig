@@ -464,13 +464,13 @@ fn genStmts(
 fn genVar(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *List,
+    stmt: *List,
 ) void {
     puts("  sub_sp 1");
 
-    if (stmt_rest.len == 2) {
-        const dest = stmt_rest.get(0);
-        const expr = stmt_rest.get(1);
+    if (stmt.len == 3) {
+        const dest = stmt.get(1);
+        const expr = stmt.get(2);
         _genSet(fn_arg_names, lvar_names, dest, expr);
     }
 }
@@ -497,13 +497,13 @@ fn genFuncDef(top_stmt: *List) void {
         const stmt = body.get(i).getList();
 
         const stmt_head = head(stmt).getStr();
-        const stmt_rest = rest(stmt);
+        const stmt_rest = rest(stmt); // TODO unnessary
 
         if (strEq(stmt_head, "var")) {
             const varName = stmt_rest.get(0).getStr();
             lvar_names.add(varName);
 
-            genVar(fn_arg_names, lvar_names, stmt_rest);
+            genVar(fn_arg_names, lvar_names, stmt);
         } else {
             genStmt(fn_arg_names, lvar_names, stmt);
         }
