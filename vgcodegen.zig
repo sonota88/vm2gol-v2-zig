@@ -173,7 +173,7 @@ fn _genExprBinary(
         genExprMult();
     } else if (strEq(op, "==")) {
         genExprEq();
-    } else if (strEq(op, "neq")) {
+    } else if (strEq(op, "!=")) {
         genExprNeq();
     } else {
         panic("not_yet_impl ({})", .{op});

@@ -338,7 +338,7 @@ fn _convertOp(s: []const u8) []const u8 {
     } else if (strEq(s, "==")) {
         return "==";
     } else if (strEq(s, "!=")) {
-        return "neq";
+        return "!=";
     } else {
         panic("Unsupported operator", .{});
     }
