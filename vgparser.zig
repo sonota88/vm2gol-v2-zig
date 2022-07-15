@@ -285,9 +285,7 @@ fn parseVar() *List {
 
     consumeKw("var");
 
-    const t = peek(1);
-
-    if (t.is(TokenKind.SYM, ";")) {
+    if (peek(1).is(TokenKind.SYM, ";")) {
         return _parseVarDeclare();
     } else {
         return _parseVarInit();
