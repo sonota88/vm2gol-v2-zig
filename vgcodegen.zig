@@ -247,7 +247,11 @@ fn _genFuncall(
     puts_fmt("  add_sp {}", .{fn_args.len});
 }
 
-fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt: *List) void {
+fn genCall(
+    fn_arg_names: *Names,
+    lvar_names: *Names,
+    stmt: *List
+) void {
     puts_fn("genCall");
 
     const funcall = rest(stmt);
