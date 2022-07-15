@@ -263,6 +263,32 @@ fn genCallSet(
     puts_fmt("  cp reg_a {}", .{ cp_dest });
 }
 
+fn _genSet(
+    fn_arg_names: *Names,
+    lvar_names: *Names,
+    dest: *Node,
+    expr: *Node,
+) void {
+    genExpr(fn_arg_names, lvar_names, expr);
+
+    switch (dest.kind) {
+        .STR => {
+            var buf2: [16]u8 = undefined;
+            const str = dest.getStr();
+            if (0 <= lvar_names.indexOf(str)) {
+                const disp = lvarDisp(buf2[0..], lvar_names, str);
+                const cp_dest = formatIndirection(buf2[0..], "bp", disp);
+                puts_fmt("  cp reg_a {}", .{ cp_dest });
+            } else {
+                panic("must not happen", .{});
+            }
+        },
+        else => {
+            panic("not yet implemented", .{});
+        },
+    }
+}
+
 fn genSet(
     fn_arg_names: *Names,
     lvar_names: *Names,
