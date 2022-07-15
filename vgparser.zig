@@ -470,6 +470,8 @@ fn parseWhile() *List {
 fn parseWhenClause() *List {
     // puts_fn("parseWhenClause")
 
+    consumeKw("when");
+
     consumeSym("(");
     const expr = parseExpr();
     consumeSym(")");
@@ -494,19 +496,15 @@ fn parseCase() *List {
 
     consumeKw("case");
 
-    consumeSym("{");
-
     const whenClauses = newlist();
 
-    while (!peek(0).strEq("}")) {
+    while (peek(0).strEq("when")) {
         const whenClause = parseWhenClause();
         if (whenClause.len == 0) {
             break;
         }
         whenClauses.addList(whenClause);
     }
-
-    consumeSym("}");
 
     const stmt = newlist();
     stmt.addStr("case");

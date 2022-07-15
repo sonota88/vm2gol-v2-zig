@@ -61,6 +61,7 @@ fn isKw(str: []const u8) bool {
         or strEq(str, "call_set")
         or strEq(str, "while")
         or strEq(str, "case")
+        or strEq(str, "when")
         or strEq(str, "return")
         or strEq(str, "_cmt")
         or strEq(str, "_debug")
