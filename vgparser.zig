@@ -339,12 +339,12 @@ fn parseExpr() *Node {
         const op = peek(0).getStr();
         pos += 1;
 
-        const exprR = _parseExprFactor();
+        const factor = _parseExprFactor();
 
         const temp = newlist();
         temp.addStr(op);
         temp.add(expr);
-        temp.add(exprR);
+        temp.add(factor);
 
         expr = Node.initList(temp);
     }
