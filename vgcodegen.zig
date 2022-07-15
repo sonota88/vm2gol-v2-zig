@@ -354,7 +354,7 @@ fn genWhile(
     puts_fn("genWhile");
 
     const cond_expr = stmt.get(1);
-    const body      = stmt.get(2).getList();
+    const stmts     = stmt.get(2).getList();
 
     const label_id = getLabelId();
 
@@ -375,7 +375,7 @@ fn genWhile(
 
     puts_fmt("  jump_eq {}\n", .{label_end});
 
-    genStmts(fn_arg_names, lvar_names, body);
+    genStmts(fn_arg_names, lvar_names, stmts);
 
     puts_fmt("  jump {}", .{label_begin});
 
@@ -410,7 +410,7 @@ fn genCase(
         when_idx += 1;
 
         const cond = head(when_clause);
-        const _rest = rest(when_clause);
+        const stmts = rest(when_clause);
 
         puts_fmt("  # when_{}_{}", .{ label_id, when_idx });
 
@@ -423,7 +423,7 @@ fn genCase(
         puts("  compare");
         puts_fmt("  jump_eq {}_{}", .{ label_end_when_head, when_idx });
 
-        genStmts(fn_arg_names, lvar_names, _rest);
+        genStmts(fn_arg_names, lvar_names, stmts);
 
         puts_fmt("  jump {}", .{label_end});
         puts_fmt("label {}_{}", .{ label_end_when_head, when_idx });
@@ -493,7 +493,7 @@ fn genVar(
 fn genFuncDef(func_def: *List) void {
     const fn_name     = func_def.get(1).getStr();
     const fn_arg_vals = func_def.get(2).getList();
-    const body        = func_def.get(3).getList();
+    const stmts       = func_def.get(3).getList();
 
     const fn_arg_names = Names.init();
     var i: usize = 0;
@@ -508,8 +508,8 @@ fn genFuncDef(func_def: *List) void {
     asmPrologue();
 
     i = 0;
-    while (i < body.len) : (i += 1) {
-        const stmt = body.get(i).getList();
+    while (i < stmts.len) : (i += 1) {
+        const stmt = stmts.get(i).getList();
 
         const stmt_head = head(stmt).getStr();
 
