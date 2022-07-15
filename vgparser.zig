@@ -247,8 +247,8 @@ fn parseFunc() *List {
     return func;
 }
 
-fn parseVarDeclare() *List {
-    puts_fn("parseVarDeclare");
+fn _parseVarDeclare() *List {
+    puts_fn("_parseVarDeclare");
 
     const t = peek(0);
     pos += 1;
@@ -262,7 +262,7 @@ fn parseVarDeclare() *List {
     return stmt;
 }
 
-fn parseVarInit() *List {
+fn _parseVarInit() *List {
     const t = peek(0);
     pos += 1;
     const var_name = t.getStr();
@@ -288,9 +288,9 @@ fn parseVar() *List {
     const t = peek(1);
 
     if (t.is(TokenKind.SYM, ";")) {
-        return parseVarDeclare();
+        return _parseVarDeclare();
     } else {
-        return parseVarInit();
+        return _parseVarInit();
     }
 }
 
