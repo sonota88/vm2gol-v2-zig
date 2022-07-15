@@ -301,12 +301,12 @@ fn _genSet(
 fn genSet(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *List,
+    stmt: *List,
 ) void {
     puts_fn("genSet");
 
-    const dest = stmt_rest.get(0);
-    const expr = stmt_rest.get(1);
+    const dest = stmt.get(1);
+    const expr = stmt.get(2);
     _genSet(fn_arg_names, lvar_names, dest, expr);
 }
 
@@ -438,7 +438,7 @@ fn genStmt(
     const stmt_rest = rest(stmt);
 
     if (strEq(stmt_head, "set")) {
-        genSet(fn_arg_names, lvar_names, stmt_rest);
+        genSet(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "call")) {
         genCall(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "call_set")) {
