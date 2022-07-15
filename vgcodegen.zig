@@ -247,9 +247,10 @@ fn _genFuncall(
     puts_fmt("  add_sp {}", .{fn_args.len});
 }
 
-fn genCall(fn_arg_names: *Names, lvar_names: *Names, funcall: *List) void {
+fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt: *List) void {
     puts_fn("genCall");
 
+    const funcall = rest(stmt);
     _genFuncall(fn_arg_names, lvar_names, funcall);
 }
 
@@ -439,7 +440,7 @@ fn genStmt(
     if (strEq(stmt_head, "set")) {
         genSet(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "call")) {
-        genCall(fn_arg_names, lvar_names, stmt_rest);
+        genCall(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "call_set")) {
         genCallSet(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "return")) {
