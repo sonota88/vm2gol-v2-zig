@@ -311,10 +311,12 @@ fn genSet(
 }
 
 fn genReturn(
+    // TODO Add fn_arg_names
     lvar_names: *Names,
-    stmt_rest: *List,
+    stmt: *List,
 ) void {
-    const retval = head(stmt_rest);
+    // TODO rename => expr
+    const retval = stmt.get(1);
     genExpr(Names.empty(), lvar_names, retval);
 }
 
@@ -444,7 +446,7 @@ fn genStmt(
     } else if (strEq(stmt_head, "call_set")) {
         genCallSet(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "return")) {
-        genReturn(lvar_names, stmt_rest);
+        genReturn(lvar_names, stmt);
     } else if (strEq(stmt_head, "while")) {
         genWhile(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "case")) {
