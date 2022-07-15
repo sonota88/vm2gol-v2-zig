@@ -47,8 +47,6 @@ fn rest(list: *List) *List {
     return new_list;
 }
 
-// --------------------------------
-
 fn asmPrologue() void {
     puts("  push bp");
     puts("  cp sp bp");
@@ -79,16 +77,6 @@ fn lvarDisp(dest: []u8, names: *Names, name: []const u8) i32 {
 
 fn formatIndirection(buf: []u8, base: []const u8, disp: i32) []u8 {
     return bufPrint(buf, "[{}:{}]", .{base, disp});
-}
-
-fn matchNumber(str: []const u8) bool {
-    var i: usize = 0;
-    while (i < str.len) : (i += 1) {
-        if (!utils.isNumeric(str[i])) {
-            return false;
-        }
-    }
-    return true;
 }
 
 // --------------------------------
