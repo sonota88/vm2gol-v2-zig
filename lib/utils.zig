@@ -1,6 +1,5 @@
 const std = @import("std");
 const panic = std.debug.panic;
-const OutStream = std.io.OutStream;
 
 fn print_to(file: std.fs.File, val: anytype) void {
     file.outStream().print("{}", .{val}) catch |err| {
