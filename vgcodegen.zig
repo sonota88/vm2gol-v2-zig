@@ -311,12 +311,12 @@ fn genSet(
 }
 
 fn genReturn(
-    // TODO Add fn_arg_names
+    fn_arg_names: *Names,
     lvar_names: *Names,
     stmt: *List,
 ) void {
     const expr = stmt.get(1);
-    genExpr(Names.empty(), lvar_names, expr);
+    genExpr(fn_arg_names, lvar_names, expr);
 }
 
 fn genVmComment(cmt: []const u8) void {
@@ -446,7 +446,7 @@ fn genStmt(
     } else if (strEq(stmt_head, "call_set")) {
         genCallSet(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "return")) {
-        genReturn(lvar_names, stmt);
+        genReturn(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "while")) {
         genWhile(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "case")) {
