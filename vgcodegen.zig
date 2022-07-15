@@ -383,9 +383,11 @@ fn genWhile(
 fn genCase(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    when_clauses: *List,
+    stmt: *List,
 ) void {
     puts_fn("genCase");
+
+    const when_clauses = rest(stmt);
 
     const label_id = getLabelId();
     var when_idx: i32 = -1;
@@ -450,7 +452,7 @@ fn genStmt(
     } else if (strEq(stmt_head, "while")) {
         genWhile(fn_arg_names, lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "case")) {
-        genCase(fn_arg_names, lvar_names, stmt_rest);
+        genCase(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "_cmt")) {
         genVmComment(stmt_rest.get(0).str[0..]);
     } else if (strEq(stmt_head, "_debug")) {
