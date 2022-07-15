@@ -39,7 +39,7 @@ run_parse() {
   cat $infile | $ZIG run vgparser.zig
 }
 
-run_cg() {
+run_codegen() {
   local infile="$1"; shift
 
   cat $infile | $ZIG run vgcodegen.zig
@@ -223,11 +223,11 @@ test_compile_nn() {
   fi
 
   echo "  codegen" >&2
-  run_cg $temp_vgt_file \
+  run_codegen $temp_vgt_file \
     > $temp_vga_file
   if [ $? -ne 0 ]; then
-    ERRS="${ERRS},${nn}_cg"
-    local_errs="${local_errs},${nn}_cg"
+    ERRS="${ERRS},${nn}_codegen"
+    local_errs="${local_errs},${nn}_codegen"
     return
   fi
 
