@@ -484,11 +484,6 @@ fn parseWhile() *List {
 
 fn parseWhenClause() *List {
     // puts_fn("parseWhenClause")
-    const t = peek(0);
-
-    if (t.is(TokenKind.SYM, "}")) {
-        return List.empty();
-    }
 
     consumeSym("(");
     const expr = parseExpr();
@@ -518,7 +513,7 @@ fn parseCase() *List {
 
     const whenClauses = newlist();
 
-    while (true) {
+    while (!peek(0).strEq("}")) {
         const whenClause = parseWhenClause();
         if (whenClause.len == 0) {
             break;
