@@ -40,10 +40,13 @@ pub fn putskv_e(key: []const u8, val: anytype) void {
     print_e(")\n");
 }
 
+// for debug
 pub fn puts_fn(fnName: []const u8) void {
-    print_e("    |-->> ");
-    print_e(fnName);
-    print_e("\n");
+    if (!true) {
+        print_e("    |-->> ");
+        print_e(fnName);
+        print_e("\n");
+    }
 }
 
 pub fn readStdinAll(buf: [*]u8) []const u8 {
