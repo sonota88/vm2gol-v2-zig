@@ -439,7 +439,7 @@ fn genStmt(
     puts_fn("genStmt");
 
     const stmt_head = head(stmt).getStr();
-    const stmt_rest = rest(stmt);
+    const stmt_rest = rest(stmt); // TODO unnessary
 
     if (strEq(stmt_head, "set")) {
         genSet(fn_arg_names, lvar_names, stmt);
@@ -454,7 +454,7 @@ fn genStmt(
     } else if (strEq(stmt_head, "case")) {
         genCase(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "_cmt")) {
-        genVmComment(stmt_rest.get(0).str[0..]);
+        genVmComment(stmt.get(1).str[0..]);
     } else if (strEq(stmt_head, "_debug")) {
         genDebug();
     } else {
