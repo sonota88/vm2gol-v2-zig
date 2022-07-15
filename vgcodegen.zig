@@ -346,12 +346,12 @@ fn genDebug() void {
 fn genWhile(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *List,
+    stmt: *List,
 ) void {
     puts_fn("genWhile");
 
-    const cond_expr = stmt_rest.get(0);
-    const body = stmt_rest.get(1).getList();
+    const cond_expr = stmt.get(1);
+    const body = stmt.get(2).getList();
 
     const label_id = getLabelId();
 
@@ -450,7 +450,7 @@ fn genStmt(
     } else if (strEq(stmt_head, "return")) {
         genReturn(lvar_names, stmt);
     } else if (strEq(stmt_head, "while")) {
-        genWhile(fn_arg_names, lvar_names, stmt_rest);
+        genWhile(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "case")) {
         genCase(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "_cmt")) {
