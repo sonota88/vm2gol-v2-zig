@@ -381,9 +381,6 @@ fn genCase(
     var buf3: [32]u8 = undefined;
     const label_end_when_head = bufPrint(&buf3, "end_when_{}", .{label_id});
 
-    print("\n");
-    puts_fmt("  # -->> case_{}", .{label_id});
-
     var i: usize = 0;
     while (i < when_clauses.len) : (i += 1) {
         const when_clause = when_clauses.get(i).getList();
@@ -392,15 +389,11 @@ fn genCase(
         const cond = head(when_clause);
         const stmts = rest(when_clause);
 
-        puts_fmt("  # when_{}_{}", .{ label_id, when_idx });
-
-        puts("  # -->> expr");
         genExpr(fn_arg_names, lvar_names, cond);
-        puts("  # <<-- expr");
 
         puts("  cp 0 reg_b");
-
         puts("  compare");
+
         puts_fmt("  jump_eq {}_{}", .{ label_end_when_head, when_idx });
 
         genStmts(fn_arg_names, lvar_names, stmts);
@@ -410,8 +403,6 @@ fn genCase(
     }
 
     puts_fmt("label end_case_{}", .{label_id});
-    puts_fmt("  # <<-- case_{}", .{label_id});
-    print("\n");
 }
 
 fn genStmt(
