@@ -266,7 +266,7 @@ fn genCallSet(
     puts_fn("genCallSet");
 
     const lvar_name = stmt.get(1).getStr();
-    const funcall = stmt.get(2).getList();
+    const funcall   = stmt.get(2).getList();
 
     _genFuncall(fn_arg_names, lvar_names, funcall);
 
@@ -354,7 +354,7 @@ fn genWhile(
     puts_fn("genWhile");
 
     const cond_expr = stmt.get(1);
-    const body = stmt.get(2).getList();
+    const body      = stmt.get(2).getList();
 
     const label_id = getLabelId();
 
@@ -491,9 +491,9 @@ fn genVar(
 }
 
 fn genFuncDef(func_def: *List) void {
-    const fn_name = func_def.get(1).getStr();
+    const fn_name     = func_def.get(1).getStr();
     const fn_arg_vals = func_def.get(2).getList();
-    const body = func_def.get(3).getList();
+    const body        = func_def.get(3).getList();
 
     const fn_arg_names = Names.init();
     var i: usize = 0;
