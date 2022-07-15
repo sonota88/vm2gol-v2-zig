@@ -257,12 +257,12 @@ fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt: *List) void {
 fn genCallSet(
     fn_arg_names: *Names,
     lvar_names: *Names,
-    stmt_rest: *List,
+    stmt: *List,
 ) void {
     puts_fn("genCallSet");
 
-    const lvar_name = stmt_rest.get(0).getStr();
-    const funcall = stmt_rest.get(1).getList();
+    const lvar_name = stmt.get(1).getStr();
+    const funcall = stmt.get(2).getList();
 
     _genFuncall(fn_arg_names, lvar_names, funcall);
 
@@ -442,7 +442,7 @@ fn genStmt(
     } else if (strEq(stmt_head, "call")) {
         genCall(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "call_set")) {
-        genCallSet(fn_arg_names, lvar_names, stmt_rest);
+        genCallSet(fn_arg_names, lvar_names, stmt);
     } else if (strEq(stmt_head, "return")) {
         genReturn(lvar_names, stmt_rest);
     } else if (strEq(stmt_head, "while")) {
