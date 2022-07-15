@@ -50,7 +50,7 @@ pub fn parseList(input_json: []const u8, size: *usize) *List {
             list.addStr(matched_part);
             pos += matched_part.len + 2;
         } else {
-            std.debug.panic("Unexpected pattern: pos({}) rest({}) rest[0]({})", .{ pos, rest, rest[0] });
+            panic("Unexpected pattern: pos({}) rest({}) rest[0]({})", .{ pos, rest, rest[0] });
         }
     }
 
