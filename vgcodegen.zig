@@ -509,10 +509,9 @@ fn genFuncDef(func_def: *List) void {
         const stmt = body.get(i).getList();
 
         const stmt_head = head(stmt).getStr();
-        const stmt_rest = rest(stmt); // TODO unnessary
 
         if (strEq(stmt_head, "var")) {
-            const varName = stmt_rest.get(0).getStr();
+            const varName = stmt.get(1).getStr();
             lvar_names.add(varName);
 
             genVar(fn_arg_names, lvar_names, stmt);
