@@ -330,28 +330,13 @@ fn _parseExprFactor() *Node {
     }
 }
 
-fn _convertOp(s: []const u8) []const u8 {
-    if (strEq(s, "+")) {
-        return "+";
-    } else if (strEq(s, "*")) {
-        return "*";
-    } else if (strEq(s, "==")) {
-        return "==";
-    } else if (strEq(s, "!=")) {
-        return "!=";
-    } else {
-        panic("Unsupported operator", .{});
-    }
-}
-
 fn parseExpr() *Node {
     puts_fn("parseExpr");
 
     var expr: *Node = _parseExprFactor();
 
     while (isBinaryOp(peek(0))) {
-        const s = peek(0).getStr();
-        const op = _convertOp(s);
+        const op = peek(0).getStr();
         pos += 1;
 
         const exprR = _parseExprFactor();
