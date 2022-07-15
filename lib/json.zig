@@ -3,6 +3,8 @@ const panic = std.debug.panic;
 
 const utils = @import("utils.zig");
 const _print = utils.print;
+const print_s = utils.print_s;
+const print_i = utils.print_i;
 const puts_e = utils.puts_e;
 
 const types = @import("types.zig");
@@ -50,7 +52,7 @@ pub fn parseList(input_json: []const u8, size: *usize) *List {
             list.addStr(matched_part);
             pos += matched_part.len + 2;
         } else {
-            panic("Unexpected pattern: pos({}) rest({}) rest[0]({})", .{ pos, rest, rest[0] });
+            panic("Unexpected pattern: pos({}) rest({s}) rest[0]({})", .{ pos, rest, rest[0] });
         }
     }
 
@@ -70,7 +72,7 @@ pub fn parse(input_json: []const u8) *List {
 fn printIndent(lv: u8) void {
     var i: usize = 0;
     while (i < lv) : (i += 1) {
-        _print("  ");
+        print_s("  ");
     }
 }
 
@@ -80,15 +82,19 @@ fn printNode(node: *Node, lv: u8, pretty: bool) void {
             if (pretty) {
                 printIndent(lv + 1);
             }
-            _print(node.int);
+            if (node.int) |n| {
+                print_i(n);
+            } else {
+                panic("must not happen", .{});
+            }
         },
         .STR => {
             if (pretty) {
                 printIndent(lv + 1);
             }
-            _print("\"");
-            _print(node.getStr());
-            _print("\"");
+            print_s("\"");
+            print_s(node.getStr());
+            print_s("\"");
         },
         .LIST => {
             const list: ?*List = node.list;
@@ -101,9 +107,9 @@ fn printNode(node: *Node, lv: u8, pretty: bool) void {
 
 fn printList(list: *List, lv: u8, pretty: bool) void {
     printIndent(lv);
-    _print("[");
+    print_s("[");
     if (pretty) {
-        _print("\n");
+        print_s("\n");
     }
 
     var i: usize = 0;
@@ -111,26 +117,26 @@ fn printList(list: *List, lv: u8, pretty: bool) void {
         const node = list.get(i);
         if (1 <= i) {
             if (pretty) {
-                _print(",\n");
+                print_s(",\n");
             } else {
-                _print(", ");
+                print_s(", ");
             }
         }
         printNode(node, lv, pretty);
     }
     if (pretty) {
-        _print("\n");
+        print_s("\n");
     }
 
     if (pretty) {
         printIndent(lv);
     }
-    _print("]");
+    print_s("]");
 }
 
 pub fn print(list: *List) void {
     printList(list, 0, true);
-    _print("\n");
+    print_s("\n");
 }
 
 pub fn printOneLine(list: *List) void {

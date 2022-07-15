@@ -3,6 +3,7 @@ const panic = std.debug.panic;
 
 const utils = @import("lib/utils.zig");
 const print = utils.print;
+const print_s = utils.print_s;
 const puts = utils.puts;
 const puts_e = utils.puts_e;
 const putskv_e = utils.putskv_e;
@@ -43,7 +44,7 @@ fn matchStr(rest: []const u8) usize {
 
     const i = indexOf(rest, '"', 1);
     if (i == -1) {
-        panic("must not happen ({})", .{rest});
+        panic("must not happen ({s})", .{rest});
     }
     return @intCast(usize, i) - 1;
 }
@@ -113,7 +114,7 @@ fn putsToken(lineno: u32, kind: []const u8, str: []const u8) void {
     xs.addStr(str);
 
     json.printOneLine(xs);
-    print("\n");
+    print_s("\n");
 }
 
 fn tokenize(src: []const u8) void {
@@ -176,7 +177,7 @@ fn tokenize(src: []const u8) void {
             continue;
         }
 
-        panic("Unexpected pattern ({})", .{rest});
+        panic("Unexpected pattern ({s})", .{rest});
     }
 }
 

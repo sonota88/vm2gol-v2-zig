@@ -81,7 +81,7 @@ fn strToTokenKind(kind_str: []const u8) TokenKind {
     } else if (strEq(kind_str, "ident")) {
         return TokenKind.IDENT;
     } else {
-        panic("must not happen ({})", .{kind_str});
+        panic("must not happen ({s})", .{kind_str});
     }
 }
 
@@ -145,7 +145,7 @@ fn assertToken(kind: TokenKind, str: []const u8) void {
     }
 
     if (!t.strEq(str)) {
-        panic("Unexpected str ({}) ({})", .{ str, t });
+        panic("Unexpected str ({s}) ({})", .{ str, t });
     }
 }
 
@@ -602,7 +602,7 @@ fn parseTopStmt() *List {
     if (strEq(t.getStr(), "func")) {
         return parseFunc();
     } else {
-        panic("Unexpected tokens: pos({}) kind({}) str({})", .{ pos, t.kind, t.getStr() });
+        panic("Unexpected tokens: pos({}) kind({s}) str({s})", .{ pos, t.kind, t.getStr() });
     }
 }
 

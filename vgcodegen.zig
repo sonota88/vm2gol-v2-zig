@@ -3,7 +3,9 @@ const panic = std.debug.panic;
 
 const utils = @import("lib/utils.zig");
 const print = utils.print;
+const print_s = utils.print_s;
 const puts = utils.puts;
+const puts_s = utils.puts_s;
 const puts_fmt = utils.puts_fmt;
 const print_e = utils.print_e;
 const puts_e = utils.puts_e;
@@ -48,13 +50,13 @@ fn rest(list: *List) *List {
 }
 
 fn asmPrologue() void {
-    puts("  push bp");
-    puts("  cp sp bp");
+    puts_s("  push bp");
+    puts_s("  cp sp bp");
 }
 
 fn asmEpilogue() void {
-    puts("  cp bp sp");
-    puts("  pop bp");
+    puts_s("  cp bp sp");
+    puts_s("  pop bp");
 }
 
 fn fnArgDisp(names: *Names, name: []const u8) i32 {
@@ -78,15 +80,15 @@ fn lvarDisp(dest: []u8, names: *Names, name: []const u8) i32 {
 // --------------------------------
 
 fn genExprAdd() void {
-    puts("  pop reg_b");
-    puts("  pop reg_a");
-    puts("  add_ab");
+    puts_s("  pop reg_b");
+    puts_s("  pop reg_a");
+    puts_s("  add_ab");
 }
 
 fn genExprMult() void {
-    puts("  pop reg_b");
-    puts("  pop reg_a");
-    puts("  mult_ab");
+    puts_s("  pop reg_b");
+    puts_s("  pop reg_a");
+    puts_s("  mult_ab");
 }
 
 fn genExprEq() void {
@@ -97,18 +99,18 @@ fn genExprEq() void {
     var buf2: [32]u8 = undefined;
     const end_label = bufPrint(&buf2, "end_eq_{}", .{label_id});
 
-    puts("  pop reg_b");
-    puts("  pop reg_a");
+    puts_s("  pop reg_b");
+    puts_s("  pop reg_a");
 
-    puts("  compare");
-    puts_fmt("  jump_eq {}", .{then_label});
+    puts_s("  compare");
+    puts_fmt("  jump_eq {s}", .{then_label});
 
-    puts("  cp 0 reg_a");
-    puts_fmt("  jump {}", .{end_label});
+    puts_s("  cp 0 reg_a");
+    puts_fmt("  jump {s}", .{end_label});
 
-    puts_fmt("label {}", .{then_label});
-    puts("  cp 1 reg_a");
-    puts_fmt("label {}", .{end_label});
+    puts_fmt("label {s}", .{then_label});
+    puts_s("  cp 1 reg_a");
+    puts_fmt("label {s}", .{end_label});
 }
 
 fn genExprNeq() void {
@@ -119,18 +121,18 @@ fn genExprNeq() void {
     var buf2: [32]u8 = undefined;
     const end_label = bufPrint(&buf2, "end_neq_{}", .{label_id});
 
-    puts("  pop reg_b");
-    puts("  pop reg_a");
+    puts_s("  pop reg_b");
+    puts_s("  pop reg_a");
 
-    puts("  compare");
-    puts_fmt("  jump_eq {}", .{then_label});
+    puts_s("  compare");
+    puts_fmt("  jump_eq {s}", .{then_label});
 
-    puts("  cp 1 reg_a");
-    puts_fmt("  jump {}", .{end_label});
+    puts_s("  cp 1 reg_a");
+    puts_fmt("  jump {s}", .{end_label});
 
-    puts_fmt("label {}", .{then_label});
-    puts("  cp 0 reg_a");
-    puts_fmt("label {}", .{end_label});
+    puts_fmt("label {s}", .{then_label});
+    puts_s("  cp 0 reg_a");
+    puts_fmt("label {s}", .{end_label});
 }
 
 fn _genExprBinary(
@@ -147,9 +149,9 @@ fn _genExprBinary(
     const term_r = args.get(1);
 
     genExpr(fn_arg_names, lvar_names, term_l);
-    puts("  push reg_a");
+    puts_s("  push reg_a");
     genExpr(fn_arg_names, lvar_names, term_r);
-    puts("  push reg_a");
+    puts_s("  push reg_a");
 
     if (strEq(op, "+")) {
         genExprAdd();
@@ -160,7 +162,7 @@ fn _genExprBinary(
     } else if (strEq(op, "!=")) {
         genExprNeq();
     } else {
-        panic("not_yet_impl ({})", .{op});
+        panic("not_yet_impl ({s})", .{op});
     }
 }
 
@@ -212,7 +214,7 @@ fn _genFuncall(
         while (true) {
             const fn_arg = fn_args.get(i);
             genExpr(fn_arg_names, lvar_names, fn_arg);
-            puts("  push reg_a");
+            puts_s("  push reg_a");
             if (i == 0) {
                 break;
             } else {
@@ -222,10 +224,10 @@ fn _genFuncall(
     }
 
     var buf1: [256]u8 = undefined;
-    const vm_cmt = bufPrint(&buf1, "call  {}", .{fn_name});
+    const vm_cmt = bufPrint(&buf1, "call  {s}", .{fn_name});
     genVmComment(vm_cmt);
 
-    puts_fmt("  call {}", .{fn_name});
+    puts_fmt("  call {s}", .{fn_name});
     puts_fmt("  add_sp {}", .{fn_args.len});
 }
 
@@ -317,7 +319,7 @@ fn genVmComment(cmt: []const u8) void {
         }
     }
 
-    puts_fmt("  _cmt {}", .{temp[0..i]});
+    puts_fmt("  _cmt {s}", .{temp[0..i]});
 }
 
 fn genDebug() void {
@@ -344,23 +346,23 @@ fn genWhile(
     var buf2: [16]u8 = undefined;
     const label_end = bufPrint(&buf2, "end_while_{}", .{label_id});
 
-    print("\n");
+    print_s("\n");
 
-    puts_fmt("label {}", .{label_begin});
+    puts_fmt("label {s}", .{label_begin});
 
     genExpr(fn_arg_names, lvar_names, cond_expr);
 
-    puts("  cp 0 reg_b");
-    puts("  compare");
+    puts_s("  cp 0 reg_b");
+    puts_s("  compare");
 
-    puts_fmt("  jump_eq {}\n", .{label_end});
+    puts_fmt("  jump_eq {s}\n", .{label_end});
 
     genStmts(fn_arg_names, lvar_names, stmts);
 
-    puts_fmt("  jump {}", .{label_begin});
+    puts_fmt("  jump {s}", .{label_begin});
 
-    puts_fmt("label {}\n", .{label_end});
-    print("\n");
+    puts_fmt("label {s}\n", .{label_end});
+    print_s("\n");
 }
 
 fn genCase(
@@ -391,15 +393,15 @@ fn genCase(
 
         genExpr(fn_arg_names, lvar_names, cond);
 
-        puts("  cp 0 reg_b");
-        puts("  compare");
+        puts_s("  cp 0 reg_b");
+        puts_s("  compare");
 
-        puts_fmt("  jump_eq {}_{}", .{ label_end_when_head, when_idx });
+        puts_fmt("  jump_eq {s}_{}", .{ label_end_when_head, when_idx });
 
         genStmts(fn_arg_names, lvar_names, stmts);
 
-        puts_fmt("  jump {}", .{label_end});
-        puts_fmt("label {}_{}", .{ label_end_when_head, when_idx });
+        puts_fmt("  jump {s}", .{label_end});
+        puts_fmt("label {s}_{}", .{ label_end_when_head, when_idx });
     }
 
     puts_fmt("label end_case_{}", .{label_id});
@@ -431,7 +433,7 @@ fn genStmt(
     } else if (strEq(stmt_head, "_debug")) {
         genDebug();
     } else {
-        panic("Unsupported statement ({})", .{stmt_head});
+        panic("Unsupported statement ({s})", .{stmt_head});
     }
 }
 
@@ -452,7 +454,7 @@ fn genVar(
     lvar_names: *Names,
     stmt: *List,
 ) void {
-    puts("  sub_sp 1");
+    puts_s("  sub_sp 1");
 
     if (stmt.len == 3) {
         const dest = stmt.get(1);
@@ -474,7 +476,7 @@ fn genFuncDef(func_def: *List) void {
 
     const lvar_names = Names.init();
 
-    puts_fmt("label {}", .{fn_name});
+    puts_fmt("label {s}", .{fn_name});
 
     asmPrologue();
 
@@ -495,7 +497,7 @@ fn genFuncDef(func_def: *List) void {
     }
 
     asmEpilogue();
-    puts("  ret");
+    puts_s("  ret");
 }
 
 fn genTopStmts(top_stmts: *List) void {
@@ -508,31 +510,31 @@ fn genTopStmts(top_stmts: *List) void {
         if (strEq(stmt_head, "func")) {
             genFuncDef(top_stmt);
         } else {
-            panic("must not happen ({})", .{stmt_head});
+            panic("must not happen ({s})", .{stmt_head});
         }
     }
 }
 
 fn genBuiltinSetVram() void {
-    puts("");
-    puts("label set_vram");
+    puts_s("");
+    puts_s("label set_vram");
     asmPrologue();
 
-    puts("  set_vram [bp:2] [bp:3]"); // vram_addr value
+    puts_s("  set_vram [bp:2] [bp:3]"); // vram_addr value
 
     asmEpilogue();
-    puts("  ret");
+    puts_s("  ret");
 }
 
 fn genBuiltinGetVram() void {
-    puts("");
-    puts("label get_vram");
+    puts_s("");
+    puts_s("label get_vram");
     asmPrologue();
 
-    puts("  get_vram [bp:2] reg_a"); // vram_addr dest
+    puts_s("  get_vram [bp:2] reg_a"); // vram_addr dest
 
     asmEpilogue();
-    puts("  ret");
+    puts_s("  ret");
 }
 
 pub fn main() !void {
@@ -541,14 +543,14 @@ pub fn main() !void {
 
     const top_stmts = json.parse(src);
 
-    puts("  call main");
-    puts("  exit");
+    puts_s("  call main");
+    puts_s("  exit");
 
     genTopStmts(top_stmts);
 
-    puts("");
-    puts("#>builtins");
+    puts_s("");
+    puts_s("#>builtins");
     genBuiltinSetVram();
     genBuiltinGetVram();
-    puts("#<builtins");
+    puts_s("#<builtins");
 }

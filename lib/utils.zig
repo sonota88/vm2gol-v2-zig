@@ -2,7 +2,19 @@ const std = @import("std");
 const panic = std.debug.panic;
 
 fn print_to(file: std.fs.File, val: anytype) void {
-    file.outStream().print("{}", .{val}) catch |err| {
+    file.writer().print("{any}", .{val}) catch |err| {
+        panic("error ({})", .{err});
+    };
+}
+
+fn print_to_s(file: std.fs.File, s: []const u8) void {
+    file.writer().print("{s}", .{s}) catch |err| {
+        panic("error ({})", .{err});
+    };
+}
+
+fn print_to_i(file: std.fs.File, n: i32) void {
+    file.writer().print("{}", .{n}) catch |err| {
         panic("error ({})", .{err});
     };
 }
@@ -11,16 +23,29 @@ pub fn print(val: anytype) void {
     print_to(std.io.getStdOut(), val);
 }
 
+pub fn print_s(s: []const u8) void {
+    print_to_s(std.io.getStdOut(), s);
+}
+
+pub fn print_i(n: i32) void {
+    print_to_i(std.io.getStdOut(), n);
+}
+
 pub fn puts(val: anytype) void {
     print(val);
-    print("\n");
+    print_s("\n");
+}
+
+pub fn puts_s(s: []const u8) void {
+    print_s(s);
+    print_s("\n");
 }
 
 pub fn puts_fmt(comptime format: []const u8, args: anytype) void {
-    std.io.getStdOut().outStream().print(format, args) catch |err| {
+    std.io.getStdOut().writer().print(format, args) catch |err| {
         panic("error ({})", .{err});
     };
-    print("\n");
+    print_s("\n");
 }
 
 pub fn print_e(val: anytype) void {
@@ -51,7 +76,7 @@ pub fn puts_fn(fnName: []const u8) void {
 pub fn readStdinAll(buf: [*]u8) []const u8 {
     const size_max = 20000;
     var i: usize = 0;
-    const stdin_stream = std.io.getStdIn().inStream();
+    const stdin_stream = std.io.getStdIn().reader();
 
     while (true) {
         const byte = stdin_stream.readByte() catch |err| switch (err) {
@@ -233,7 +258,7 @@ pub fn concat(dest: []u8, s1: []const u8, s2: []const u8) void {
 
 pub fn parseInt(str: []const u8) i32 {
     return std.fmt.parseInt(i32, str, 10) catch |err| {
-        panic("Failed to parse ({})", .{str});
+        panic("Failed to parse ({s})", .{str});
     };
 }
 
