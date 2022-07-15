@@ -439,7 +439,6 @@ fn genStmt(
     puts_fn("genStmt");
 
     const stmt_head = head(stmt).getStr();
-    const stmt_rest = rest(stmt); // TODO unnessary
 
     if (strEq(stmt_head, "set")) {
         genSet(fn_arg_names, lvar_names, stmt);
