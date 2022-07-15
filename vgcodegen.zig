@@ -530,7 +530,6 @@ fn genTopStmts(top_stmts: *List) void {
         const top_stmt = top_stmts.get(i).getList();
 
         const stmt_head = head(top_stmt).getStr();
-        const stmt_rest = rest(top_stmt);
 
         if (strEq(stmt_head, "func")) {
             genFuncDef(top_stmt);
