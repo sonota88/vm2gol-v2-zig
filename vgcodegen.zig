@@ -295,31 +295,10 @@ fn genSet(
     stmt_rest: *List,
 ) void {
     puts_fn("genSet");
+
     const dest = stmt_rest.get(0);
     const expr = stmt_rest.get(1);
-
-    genExpr(fn_arg_names, lvar_names, expr);
-
-    switch (dest.kind) {
-        .STR => {
-            var buf2: [16]u8 = undefined;
-            const str = dest.getStr();
-            if (0 <= lvar_names.indexOf(str)) {
-                const disp = lvarDisp(buf2[0..], lvar_names, str);
-                const cp_dest = formatIndirection(buf2[0..], "bp", disp);
-                puts_fmt("  cp reg_a {}", .{ cp_dest });
-            } else if (0 <= fn_arg_names.indexOf(str)) {
-                const disp = fnArgDisp(fn_arg_names, str);
-                const cp_dest = formatIndirection(buf2[0..], "bp", disp);
-                puts_fmt("  cp reg_a {}", .{ cp_dest });
-            } else {
-                panic("must not happen", .{});
-            }
-        },
-        else => {
-            panic("not yet implemented", .{});
-        },
-    }
+    _genSet(fn_arg_names, lvar_names, dest, expr);
 }
 
 fn genReturn(
@@ -490,7 +469,9 @@ fn genVar(
     puts("  sub_sp 1");
 
     if (stmt_rest.len == 2) {
-        genSet(fn_arg_names, lvar_names, stmt_rest);
+        const dest = stmt_rest.get(0);
+        const expr = stmt_rest.get(1);
+        _genSet(fn_arg_names, lvar_names, dest, expr);
     }
 }
 
