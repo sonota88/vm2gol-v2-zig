@@ -315,9 +315,8 @@ fn genReturn(
     lvar_names: *Names,
     stmt: *List,
 ) void {
-    // TODO rename => expr
-    const retval = stmt.get(1);
-    genExpr(Names.empty(), lvar_names, retval);
+    const expr = stmt.get(1);
+    genExpr(Names.empty(), lvar_names, expr);
 }
 
 fn genVmComment(cmt: []const u8) void {
