@@ -171,7 +171,7 @@ fn _genExprBinary(
         genExprAdd();
     } else if (strEq(op, "*")) {
         genExprMult();
-    } else if (strEq(op, "eq")) {
+    } else if (strEq(op, "==")) {
         genExprEq();
     } else if (strEq(op, "neq")) {
         genExprNeq();
