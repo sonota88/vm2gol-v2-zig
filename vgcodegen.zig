@@ -75,10 +75,6 @@ fn lvarDisp(dest: []u8, names: *Names, name: []const u8) i32 {
     return -(i + 1);
 }
 
-fn formatIndirection(buf: []u8, base: []const u8, disp: i32) []u8 {
-    return bufPrint(buf, "[{}:{}]", .{base, disp});
-}
-
 // --------------------------------
 
 fn genExprAdd() void {
@@ -189,12 +185,10 @@ fn genExpr(
             const str = expr.getStr();
             if (0 <= lvar_names.indexOf(str)) {
                 const disp = lvarDisp(buf2[0..], lvar_names, str);
-                const cp_src = formatIndirection(buf2[0..], "bp", disp);
-                puts_fmt("  cp {} reg_a", .{ cp_src });
+                puts_fmt("  cp [bp:{}] reg_a", .{ disp });
             } else if (0 <= fn_arg_names.indexOf(str)) {
                 const disp = fnArgDisp(fn_arg_names, str);
-                const cp_src = formatIndirection(buf2[0..], "bp", disp);
-                puts_fmt("  cp {} reg_a", .{ cp_src });
+                puts_fmt("  cp [bp:{}] reg_a", .{ disp });
             } else {
                 panic("must not happen", .{});
             }
@@ -260,8 +254,7 @@ fn genCallSet(
 
     var buf: [8]u8 = undefined;
     const disp = lvarDisp(buf[0..], lvar_names, lvar_name);
-    var cp_dest = formatIndirection(buf[0..], "bp", disp);
-    puts_fmt("  cp reg_a {}", .{ cp_dest });
+    puts_fmt("  cp reg_a [bp:{}]", .{ disp });
 }
 
 fn _genSet(
@@ -278,8 +271,7 @@ fn _genSet(
             const str = dest.getStr();
             if (0 <= lvar_names.indexOf(str)) {
                 const disp = lvarDisp(buf2[0..], lvar_names, str);
-                const cp_dest = formatIndirection(buf2[0..], "bp", disp);
-                puts_fmt("  cp reg_a {}", .{ cp_dest });
+                puts_fmt("  cp reg_a [bp:{}]", .{ disp });
             } else {
                 panic("must not happen", .{});
             }
