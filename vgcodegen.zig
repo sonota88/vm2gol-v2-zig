@@ -247,32 +247,10 @@ fn _genFuncall(
     puts_fmt("  add_sp {}", .{fn_args.len});
 }
 
-fn genCall(fn_arg_names: *Names, lvar_names: *Names, stmt_rest: *List) void {
+fn genCall(fn_arg_names: *Names, lvar_names: *Names, funcall: *List) void {
     puts_fn("genCall");
 
-    const fn_name = head(stmt_rest).getStr();
-    const fn_args = rest(stmt_rest);
-
-    if (1 <= fn_args.len) {
-        var i: usize = fn_args.len - 1;
-        while (true) {
-            const fn_arg = fn_args.get(i);
-            genExpr(fn_arg_names, lvar_names, fn_arg);
-            puts("  push reg_a");
-            if (i == 0) {
-                break;
-            } else {
-                i -= 1;
-            }
-        }
-    }
-
-    var buf1: [256]u8 = undefined;
-    const vm_cmt = bufPrint(&buf1, "call  {}", .{fn_name});
-    genVmComment(vm_cmt);
-
-    puts_fmt("  call {}", .{fn_name});
-    puts_fmt("  add_sp {}", .{fn_args.len});
+    _genFuncall(fn_arg_names, lvar_names, funcall);
 }
 
 fn genCallSet(
@@ -285,7 +263,7 @@ fn genCallSet(
     const lvar_name = stmt_rest.get(0).getStr();
     const funcall = stmt_rest.get(1).getList();
 
-    genCall(fn_arg_names, lvar_names, funcall);
+    _genFuncall(fn_arg_names, lvar_names, funcall);
 
     var buf: [8]u8 = undefined;
     const disp = lvarDisp(buf[0..], lvar_names, lvar_name);
