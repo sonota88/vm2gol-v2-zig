@@ -12,21 +12,7 @@ const List = types.List;
 
 const allocator = std.heap.page_allocator;
 
-const ParseRetval = struct {
-    list: *List,
-    size: usize,
-
-    fn init(list: *List, size: usize) *ParseRetval {
-        var obj = allocator.create(ParseRetval) catch |err| {
-            panic("Failed to allocate ({})", .{err});
-        };
-        obj.list = list;
-        obj.size = size;
-        return obj;
-    }
-};
-
-pub fn parseList(input_json: []const u8) *ParseRetval {
+pub fn parseList(input_json: []const u8, size: *usize) *List {
     const list = List.init();
     var pos: usize = 1;
     var rest: []const u8 = undefined;
@@ -38,9 +24,10 @@ pub fn parseList(input_json: []const u8) *ParseRetval {
             pos += 1;
             break;
         } else if (rest[0] == '[') {
-            const retval = parseList(rest);
-            list.addList(retval.list);
-            pos += retval.size;
+            var inner_list_size: usize = undefined;
+            const inner_list = parseList(rest, &inner_list_size);
+            list.addList(inner_list);
+            pos += inner_list_size;
         } else if (rest[0] == ' ' or rest[0] == '\n' or rest[0] == ',') {
             pos += 1;
         } else if (utils.isNumeric(rest[0]) or rest[0] == '-') {
@@ -67,13 +54,14 @@ pub fn parseList(input_json: []const u8) *ParseRetval {
         }
     }
 
-    return ParseRetval.init(list, pos);
+    size.* = pos;
+    return list;
 }
 
 pub fn parse(input_json: []const u8) *List {
     if (input_json[0] == '[') {
-        const retval = parseList(input_json);
-        return retval.list;
+        var size: usize = undefined;
+        return parseList(input_json, &size);
     } else {
         panic("Unexpected pattern", .{});
     }
