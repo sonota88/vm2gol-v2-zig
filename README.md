@@ -12,10 +12,10 @@ cd vm2gol-v2-zig
 ./docker_run.sh zig version
   # 0.9.1
 
-LANG=C wc -l vg{lexer,parser,codegen}.zig lib/{types,utils,json}.zig
-  #  189 vglexer.zig
-  #  630 vgparser.zig
-  #  552 vgcodegen.zig
+LANG=C wc -l {lexer,parser,codegen}.zig lib/{types,utils,json}.zig
+  #  189 lexer.zig
+  #  630 parser.zig
+  #  552 codegen.zig
   #  209 lib/types.zig
   #  244 lib/utils.zig
   #  144 lib/json.zig

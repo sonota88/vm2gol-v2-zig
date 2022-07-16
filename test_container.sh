@@ -30,19 +30,19 @@ run_test_json() {
 run_lex() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run vglexer.zig
+  cat $infile | $ZIG run lexer.zig
 }
 
 run_parse() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run vgparser.zig
+  cat $infile | $ZIG run parser.zig
 }
 
 run_codegen() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run vgcodegen.zig
+  cat $infile | $ZIG run codegen.zig
 }
 
 # --------------------------------
