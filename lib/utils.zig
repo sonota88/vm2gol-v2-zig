@@ -234,28 +234,6 @@ pub fn indexOfNonNumeric(str: []const u8, start_index: usize) usize {
     return i;
 }
 
-pub fn concat(dest: []u8, s1: []const u8, s2: []const u8) void {
-    var di: usize = 0;
-    var s1i: usize = 0;
-    var s2i: usize = 0;
-
-    const len1: usize = strlen2(s1);
-    while (s1i < len1) {
-        dest[di] = s1[s1i];
-        di += 1;
-        s1i += 1;
-    }
-
-    const len2: usize = strlen2(s2);
-    while (s2i < len2) {
-        dest[di] = s2[s2i];
-        di += 1;
-        s2i += 1;
-    }
-
-    dest[di] = 0;
-}
-
 pub fn parseInt(str: []const u8) i32 {
     return std.fmt.parseInt(i32, str, 10) catch |err| {
         panic("Failed to parse ({s})", .{str});
