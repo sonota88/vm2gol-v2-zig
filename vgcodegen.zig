@@ -68,7 +68,7 @@ fn fnArgDisp(names: *Names, name: []const u8) i32 {
     return i + 2;
 }
 
-fn lvarDisp(dest: []u8, names: *Names, name: []const u8) i32 {
+fn lvarDisp(names: *Names, name: []const u8) i32 {
     const i = names.indexOf(name);
     if (i == -1) {
         panic("lvar not found", .{});
@@ -176,17 +176,15 @@ fn genExpr(
     switch (expr.kind) {
         .INT => {
             if (expr.int) |intval| {
-                var buf1: [16]u8 = undefined;
                 puts_fmt("  cp {} reg_a", .{ intval });
             } else {
                 panic("must not happen", .{});
             }
         },
         .STR => {
-            var buf2: [16]u8 = undefined;
             const str = expr.getStr();
             if (0 <= lvar_names.indexOf(str)) {
-                const disp = lvarDisp(buf2[0..], lvar_names, str);
+                const disp = lvarDisp(lvar_names, str);
                 puts_fmt("  cp [bp:{}] reg_a", .{ disp });
             } else if (0 <= fn_arg_names.indexOf(str)) {
                 const disp = fnArgDisp(fn_arg_names, str);
@@ -254,8 +252,7 @@ fn genCallSet(
 
     _genFuncall(fn_arg_names, lvar_names, funcall);
 
-    var buf: [8]u8 = undefined;
-    const disp = lvarDisp(buf[0..], lvar_names, lvar_name);
+    const disp = lvarDisp(lvar_names, lvar_name);
     puts_fmt("  cp reg_a [bp:{}]", .{ disp });
 }
 
@@ -269,10 +266,9 @@ fn _genSet(
 
     switch (dest.kind) {
         .STR => {
-            var buf2: [16]u8 = undefined;
             const str = dest.getStr();
             if (0 <= lvar_names.indexOf(str)) {
-                const disp = lvarDisp(buf2[0..], lvar_names, str);
+                const disp = lvarDisp(lvar_names, str);
                 puts_fmt("  cp reg_a [bp:{}]", .{ disp });
             } else {
                 panic("must not happen", .{});

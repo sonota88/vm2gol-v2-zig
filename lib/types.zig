@@ -21,7 +21,7 @@ pub const Node = struct {
     const Self = @This();
 
     pub fn init() *Self {
-        var obj = allocator.create(Self) catch |err| {
+        var obj = allocator.create(Self) catch {
             panic("Failed to allocate", .{});
         };
         obj.int = undefined;
@@ -149,7 +149,7 @@ const Name = struct {
     const Self = @This();
 
     pub fn init() *Self {
-        var obj = allocator.create(Self) catch |err| {
+        var obj = allocator.create(Self) catch {
             panic("Failed to allocate", .{});
         };
         return obj;
@@ -174,7 +174,7 @@ pub const Names = struct {
     const Self = @This();
 
     pub fn init() *Self {
-        var obj = allocator.create(Self) catch |err| {
+        var obj = allocator.create(Self) catch {
             panic("Failed to allocate", .{});
         };
         obj.len = 0;

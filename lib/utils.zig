@@ -204,9 +204,6 @@ pub fn strEq(s1: []const u8, s2: []const u8) bool {
 
 test "strEq" {
     const assert = std.debug.assert;
-    const testing = std.testing;
-    const expect = testing.expect;
-    const expectEqual = testing.expectEqual;
 
     const str: [5]u8 = [_]u8{ 'f', 'o', 'o', 0, 'x' };
 
@@ -235,7 +232,7 @@ pub fn indexOfNonNumeric(str: []const u8, start_index: usize) usize {
 }
 
 pub fn parseInt(str: []const u8) i32 {
-    return std.fmt.parseInt(i32, str, 10) catch |err| {
+    return std.fmt.parseInt(i32, str, 10) catch {
         panic("Failed to parse ({s})", .{str});
     };
 }
