@@ -19,7 +19,7 @@ USER ${USER}
 
 WORKDIR /home/${USER}
 
-ARG version="0.9.0"
+ARG version="0.9.1"
 ARG archive_file="zig-linux-x86_64-${version}.tar.xz"
 
 RUN wget -q \
