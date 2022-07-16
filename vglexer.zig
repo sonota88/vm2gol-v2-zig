@@ -107,9 +107,9 @@ fn matchIdent(rest: []const u8) usize {
     return i;
 }
 
-fn putsToken(lineno: u32, kind: []const u8, str: []const u8) void {
+fn putsToken(lineno: i32, kind: []const u8, str: []const u8) void {
     const xs = List.init();
-    xs.addInt(1);
+    xs.addInt(lineno);
     xs.addStr(kind);
     xs.addStr(str);
 
@@ -120,7 +120,7 @@ fn putsToken(lineno: u32, kind: []const u8, str: []const u8) void {
 fn tokenize(src: []const u8) void {
     var pos: usize = 0;
     var temp: [1024]u8 = undefined;
-    var lineno: u32 = 1;
+    var lineno: i32 = 1;
 
     while (pos < src.len) {
         var size: usize = 0;
