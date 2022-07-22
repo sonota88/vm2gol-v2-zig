@@ -183,16 +183,6 @@ pub fn strEq(s1: []const u8, s2: []const u8) bool {
     return true;
 }
 
-test "strEq" {
-    const assert = std.debug.assert;
-
-    const str: [5]u8 = [_]u8{ 'f', 'o', 'o', 0, 'x' };
-
-    assert(true == strEq(&str, "foo"));
-    assert(false == strEq("foo", "foox"));
-    assert(true == strEq("foo", "foo"));
-}
-
 pub fn isNumeric(ch: u8) bool {
     return '0' <= ch and ch <= '9';
 }
