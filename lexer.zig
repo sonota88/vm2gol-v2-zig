@@ -92,7 +92,7 @@ fn matchSymbol(rest: []const u8) usize {
 }
 
 fn isIdentChar(ch: u8) bool {
-    return (('a' <= ch and ch <= 'z') or utils.isNumeric(ch) or utils.matchAnyChar("[]_", ch));
+    return (('a' <= ch and ch <= 'z') or utils.isNumeric(ch) or ch == '_');
 }
 
 fn matchIdent(rest: []const u8) usize {
