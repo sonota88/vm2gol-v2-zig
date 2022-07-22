@@ -17,7 +17,7 @@ LANG=C wc -l {lexer,parser,codegen}.zig lib/{types,utils,json}.zig
   #  630 parser.zig
   #  552 codegen.zig
   #  209 lib/types.zig
-  #  244 lib/utils.zig
+  #  210 lib/utils.zig
   #  144 lib/json.zig
-  # 1968 total
+  # 1934 total
 ```
