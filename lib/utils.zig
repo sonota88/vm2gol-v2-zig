@@ -143,25 +143,6 @@ pub fn matchAnyChar(chars: []const u8, ch: u8) bool {
     return 0 <= indexOf(chars, ch, 0);
 }
 
-pub fn dumpStr(str: [*:0]u8) void {
-    var i: usize = 0;
-    while (true) : (i += 1) {
-        print_e("str ");
-        print_e(i);
-        print_e(" (");
-        print_e(str[i]);
-        print_e(")");
-        print_e("\n");
-        if (str[i] == 0) {
-            break;
-        }
-        if (100 <= i) {
-            print_e("over limit\n");
-            break;
-        }
-    }
-}
-
 pub fn substring(dest: [*]u8, src: []const u8, index_start: usize, index_end: usize) void {
     var i: usize = 0;
     var size = index_end - index_start;
@@ -210,11 +191,6 @@ test "strEq" {
     assert(true == strEq(&str, "foo"));
     assert(false == strEq("foo", "foox"));
     assert(true == strEq("foo", "foo"));
-}
-
-pub fn strTrim(str: []const u8) []const u8 {
-    const len = strlen(str);
-    return str[0..len];
 }
 
 pub fn isNumeric(ch: u8) bool {
