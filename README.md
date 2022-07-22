@@ -4,12 +4,12 @@ https://memo88.hatenablog.com/entry/2021/01/07/235019
 ```sh
 git clone --recursive https://github.com/sonota88/vm2gol-v2-zig.git
 cd vm2gol-v2-zig
-./docker_build.sh
+./docker.sh build
 ./test.sh all
 ```
 
 ```sh
-./docker_run.sh zig version
+./docker.sh run zig version
   # 0.9.1
 
 LANG=C wc -l {lexer,parser,codegen}.zig lib/{types,utils,json}.zig
