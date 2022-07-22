@@ -58,7 +58,7 @@ pub const Node = struct {
         if (self.int) |int| {
             return int;
         } else {
-            panic("err", .{});
+            panic("must not happen", .{});
         }
     }
 
