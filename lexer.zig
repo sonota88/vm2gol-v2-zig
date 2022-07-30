@@ -29,7 +29,7 @@ fn matchComment(rest: []const u8) usize {
         return 0;
     }
 
-    const i = utils.indexOf(rest, '\n', 2);
+    const i = indexOf(rest, '\n', 2);
     if (i == -1) {
         return rest.len;
     } else {
