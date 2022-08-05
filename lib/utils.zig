@@ -91,7 +91,7 @@ pub fn readStdinAll(buf: [*]u8) []const u8 {
         buf[i] = byte;
         i += 1;
         if (size_max <= i) {
-            panic("error: Too large Input", .{});
+            panic("error: Too large input", .{});
         }
     }
 
