@@ -43,7 +43,7 @@ pub fn parseList(input_json: []const u8, size: *usize) *List {
             const idx: i32 = utils.indexOf(rest, '"', 1);
             var usize_idx: usize = 0;
             if (1 <= idx) {
-                usize_idx = @intCast(usize, idx);
+                usize_idx = @intCast(idx);
             } else {
                 panic("must not happen ({})", .{idx});
             }

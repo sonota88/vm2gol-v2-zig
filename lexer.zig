@@ -33,7 +33,7 @@ fn matchComment(rest: []const u8) usize {
     if (i == -1) {
         return rest.len;
     } else {
-        return @intCast(usize, i);
+        return @intCast(i);
     }
 }
 
@@ -46,7 +46,7 @@ fn matchStr(rest: []const u8) usize {
     if (i == -1) {
         panic("must not happen ({s})", .{rest});
     }
-    return @intCast(usize, i) - 1;
+    return @intCast(i - 1);
 }
 
 fn isKwChar(ch: u8) bool {

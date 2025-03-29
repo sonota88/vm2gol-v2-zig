@@ -97,7 +97,7 @@ fn addToken(line: []const u8, ti: usize) !void {
 fn getLineSize(rest: []const u8) usize {
     const i = utils.indexOf(rest, '\n', 0);
     if (0 <= i) {
-        return @intCast(usize, i) + 1;
+        return @intCast(i + 1);
     } else {
         return rest.len;
     }

@@ -136,7 +136,7 @@ pub fn indexOf(str: []const u8, ch: u8, from: usize) i32 {
             break;
         }
     }
-    return @intCast(i32, i);
+    return @intCast(i);
 }
 
 pub fn matchAnyChar(chars: []const u8, ch: u8) bool {

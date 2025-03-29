@@ -201,7 +201,7 @@ pub const Names = struct {
         var i: usize = 0;
         while (i < self.len) : (i += 1) {
             if (utils.strEq(self.get(i).getStr(), str)) {
-                return @intCast(i32, i);
+                return @intCast(i);
             }
         }
         return -1;
