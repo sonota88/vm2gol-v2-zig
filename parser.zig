@@ -602,7 +602,7 @@ fn parseTopStmt() *List {
     if (strEq(t.getStr(), "func")) {
         return parseFunc();
     } else {
-        panic("Unexpected tokens: pos({}) kind({s}) str({s})", .{ pos, t.kind, t.getStr() });
+        panic("Unexpected tokens: pos({}) kind({}) str({s})", .{ pos, t.kind, t.getStr() });
     }
 }
 

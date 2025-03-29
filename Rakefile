@@ -33,12 +33,13 @@ desc "build"
 task :build => all_targets
 
 CLEAN.include(all_targets)
+CLEAN.include("*.o")
 
 dep_list.each { |dep|
   file dep[:target] => dep[:deps] do
     f_main = dep[:deps][0]
     bname = File.basename(f_main, ".zig")
-    sh "zig build-exe #{f_main}"
+    sh "zig build-exe -freference-trace #{f_main}"
     sh "mv #{bname} bin/"
   end
 }

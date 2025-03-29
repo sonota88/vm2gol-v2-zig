@@ -168,7 +168,7 @@ const Name = struct {
 };
 
 pub const Names = struct {
-    strs: [8]*Name = []*Name{undefined},
+    strs: [8]*Name = [_]*Name{undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined},
     len: usize,
 
     const Self = @This();
