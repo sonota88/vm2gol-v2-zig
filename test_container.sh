@@ -24,25 +24,25 @@ ERRS=""
 run_test_json() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run test_json.zig
+  cat $infile | bin/test_json
 }
 
 run_lex() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run lexer.zig
+  cat $infile | bin/lexer
 }
 
 run_parse() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run parser.zig
+  cat $infile | bin/parser
 }
 
 run_codegen() {
   local infile="$1"; shift
 
-  cat $infile | $ZIG run codegen.zig
+  cat $infile | bin/codegen
 }
 
 # --------------------------------
@@ -53,7 +53,12 @@ setup() {
 }
 
 build() {
-  :
+  rake build
+  local status=$?
+  if [ $status -ne 0 ]; then
+    echo "build failed" >&2
+    exit $status
+  fi
 }
 
 postproc() {
@@ -296,7 +301,7 @@ test_all() {
 
 setup
 
-# build
+build
 
 cmd="$1"; shift
 case $cmd in
