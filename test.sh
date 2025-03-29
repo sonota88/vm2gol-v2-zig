@@ -348,5 +348,5 @@ if (in_container); then
   container_main "$@"
 else
   # Run in container
-  ./docker.sh run bash test_container.sh "$@"
+  ./docker.sh run bash test.sh "$@"
 fi
