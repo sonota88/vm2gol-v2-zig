@@ -149,7 +149,7 @@ const Name = struct {
     const Self = @This();
 
     pub fn init() *Self {
-        var obj = allocator.create(Self) catch {
+        const obj = allocator.create(Self) catch {
             panic("Failed to allocate", .{});
         };
         return obj;

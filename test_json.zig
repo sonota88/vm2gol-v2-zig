@@ -10,7 +10,7 @@ pub fn newlist() !*List {
 }
 
 fn make_test_json_data_1() !*List {
-    var list = try newlist();
+    const list = try newlist();
     return list;
 }
 

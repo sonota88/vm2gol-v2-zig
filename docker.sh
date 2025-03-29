@@ -3,7 +3,7 @@
 set -o nounset
 set -o errexit
 
-readonly IMAGE="mini-ruccola-zig:8"
+readonly IMAGE="mini-ruccola-zig:9"
 
 build() {
   docker build \
