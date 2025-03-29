@@ -450,7 +450,7 @@ fn genVar(
     lvar_names: *Names,
     stmt: *List,
 ) void {
-    puts_s("  sub_sp 1");
+    puts_s("  add_sp -1");
 
     if (stmt.len == 3) {
         const dest = stmt.get(1);
