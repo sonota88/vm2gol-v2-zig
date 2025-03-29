@@ -1,4 +1,4 @@
-素朴な自作言語のコンパイラをZigに移植した - memo88  
+素朴な自作言語のコンパイラをZigに移植した  
 https://memo88.hatenablog.com/entry/2021/01/07/235019
 
 ```sh
