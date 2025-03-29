@@ -36,3 +36,5 @@ ENV PATH="/home/${USER}/zig:${PATH}"
 RUN mkdir /home/${USER}/work
 
 WORKDIR /home/${USER}/work
+
+ENV IN_CONTAINER=1
