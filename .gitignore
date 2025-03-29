@@ -1,3 +1,4 @@
+*.o
 z_*
 /bin/
 /zig-cache/
