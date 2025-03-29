@@ -31,7 +31,7 @@ RUN wget -q \
   && mv "zig-linux-x86_64-${version}/" "zig/" \
   && rm "$archive_file"
 
-ENV PATH "/home/${USER}/zig:${PATH}"
+ENV PATH="/home/${USER}/zig:${PATH}"
 
 RUN mkdir /home/${USER}/work
 
